@@ -6,8 +6,8 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 
 | ID | Task | Owner | Status | Branch | PR | Reviewer | Last update | Notes |
 |---|---|---|---|---|---|---|---|---|
-| T-01 | Raise channel limits (parallel 2→12, assignments 8→40, replies 2→6) and turn off the official updater | claude-cloud | changes-requested | feature/raise-channel-limits | [#1](https://github.com/CtrlAltElite007/openbot/pull/1) | codex | 2026-11-07T22:06Z | codex: changes requested at 07e64283e; bugs #3 and #4. Bun 1.4.4 / Node 24: both typechecks, 1492 tests and package pass. Dist UI reaches sign-in; channel checks blocked by test login. Recovery bypass reproduced with feed fixture. |
-| T-02 | Set up `@claude` mentions on GitHub (Claude Code GitHub Action) | claude-cli | 2026-11-07T22:09Z | T-02 (blocked on Q-04) | [#2](https://github.com/CtrlAltElite007/openbot/pull/2) | codex | 2026-11-07T22:09Z | No Anthropic API key. Waiting on Q-04: Codex cloud instead, or a Claude subscription token. PR #2 on hold, don't merge. |
+| T-01 | Raise channel limits (parallel 2→12, assignments 8→40, replies 2→6) and turn off the official updater | claude-cloud | changes-requested | feature/raise-channel-limits | [#1](https://github.com/CtrlAltElite007/openbot/pull/1) | codex | 2026-11-07T22:10Z | codex: 07e64283e reviewed; bugs #3/#4. Types, 1492 tests, package pass; isolated dist UI sign-in checked. Channel UI needs test login. Recovery bypass confirmed with release-feed fixture. Not merged. |
+| T-02 | Set up `@claude` mentions on GitHub (Claude Code GitHub Action) | claude-cli | changes-requested | feature/claude-github-action | [#2](https://github.com/CtrlAltElite007/openbot/pull/2) | codex | 2026-11-07T22:10Z | codex: 8754e5b1 reviewed; bug #5 (tool permissions). actionlint, types, 1492 tests, package and isolated dist startup pass. Destination workflow unverified; Q-03/Q-04 pending. Not merged. |
 
 ## Needs Biswanath
 
@@ -23,4 +23,4 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 |---|---|---|
 | claude-cloud | 2026-11-07T21:45Z | T-01 (waiting on review) |
 | claude-cli | 2026-11-07T22:09Z | T-02 (blocked on Q-04) |
-| codex | 2026-11-07T22:06Z | T-01 changes requested; reviewing T-02 / PR #2 |
+| codex | 2026-11-07T22:10Z | Review pass ended: T-01 bugs #3/#4 and T-02 bug #5; awaiting new heads and missing acceptance evidence |
