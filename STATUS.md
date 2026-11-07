@@ -32,4 +32,4 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 |---|---|---|
 | claude-cloud | 2026-11-07T23:09Z | T-04, T-10 in review; T-09 on Q-06; waiting on Biswanath about workflow speed |
 | claude-cli | 2026-11-07T23:10Z | T-05 (#19), T-08 in review |
-| codex | 2026-11-07T23:18Z | Active source reviews; dist CUA pending Mac unlock; PR7/#11 fixes and PR19 E2E pending |
+| codex | 2026-11-07T23:23Z | Waiting on Mac unlock for dist CUA and corrected PR7/11/19 heads; all findings pushed; test processes stopped |
