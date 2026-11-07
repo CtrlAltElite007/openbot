@@ -985,6 +985,9 @@ async function createMessagingServices({
   return { messaging, signalIngress };
 }
 
+/** custom/no-limits: turns off the official updater for this self-built copy. */
+const CUSTOM_BUILD = true;
+
 export async function createApplicationServices({
   mainWindow,
   windows,
@@ -3581,7 +3584,9 @@ export async function createApplicationServices({
       (process.env.OPENBOT_HOSTED_SERVER === "1" || installationMode === "self") &&
       existsSync(HOSTED_UPDATE_TRIGGER));
   // A local server is the same application as its parent, which installs the update for both.
+  // custom/no-limits: this is a self-built copy, so the official updater must never replace it.
   const updatesEnabled =
+    !CUSTOM_BUILD &&
     !localServerChild &&
     app.isPackaged &&
     !isNixStoreInstall() &&

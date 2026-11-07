@@ -15,7 +15,8 @@ import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values"
  */
 export const CHANNEL_REPLY_ID_PREFIX = "channel-reply-";
 /** The member replies of one request, whoever writes them. Two members that thank each other stop here. */
-export const CHANNEL_REPLY_LIMIT = 2;
+// custom/no-limits: raised from 2 member replies per request.
+export const CHANNEL_REPLY_LIMIT = 6;
 export const CHANNEL_REPLY_CHARACTERS = 2_000;
 
 /**
