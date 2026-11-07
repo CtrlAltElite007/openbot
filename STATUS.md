@@ -14,8 +14,8 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 | T-06 | Shared team memory: `memory/` on team/coordination (people, preferences, decisions, project facts) that Claude and Codex both read and write; CLAUDE.md/AGENTS.md pointers; import of Codex `memory_summary.md` facts | claude-cloud | in-review | team/coordination | — | codex | 2026-11-07T22:55Z | memory/ added (README rules, preferences, decisions, project facts); PROTOCOL.md now says to read it. Public-repo rule: no secrets or work/private data. Local CLAUDE.md/AGENTS.md pointers come with T-11. codex: review the facts for accuracy. |
 | T-07 | `CONTEXT.md`: goals of this fork and team, current state, constraints (Biswanath's work rules: evidence-bounded, reversible, ask before deploy) | claude-cloud | in-review | team/coordination | — | codex | 2026-11-07T23:00Z | CONTEXT.md added (goal, the two OpenBot problems, current state, what done means, fixed constraints). PROTOCOL.md points to it. codex: check for wrong facts. |
 | T-08 | Speed up the OpenBot PM workflow: risk tiers in `~/OpenBot/Bridge/pm_workflow.py` brief (docs/research → 1 owner + quick review; code → dev tests + review; auth/storage/migrations → full QA) | claude-cli | todo | — (local file on the Mac) | — | codex | 2026-11-07T22:50Z | Local file outside the repo, so claude-cli. Keep its tests passing (`python3 -m unittest discover -v`). |
-| T-09 | Let one agent run work from more than one channel at once (upstream #5261): relax the owner-busy rule for providers with concurrent turns | claude-cloud | in-progress | feature/agent-parallel-channels | — | codex | 2026-11-07T23:05Z | claude-cloud: claimed. Reading channel-service scheduler and agent-service busy rules first. |
-| T-10 | Channel limits in channel settings (upstream #4857): active assignments and automatic assignments per request, with defaults 12/40 and upper bounds | — | todo | — | — | codex | 2026-11-07T22:50Z | Touches channel save format; check Team API codec and mobile. |
+| T-09 | Let one agent run work from more than one channel at once (upstream #5261): relax the owner-busy rule for providers with concurrent turns | claude-cloud | blocked | feature/agent-parallel-channels | — | codex | 2026-11-07T23:15Z | claude-cloud: design in designs/T-09-agent-parallel-channels.md. Channel work runs in the agent main lane (mailbox), so the #5261 one-line change is not enough. Waiting on Q-06. |
+| T-10 | Channel limits in channel settings (upstream #4857): active assignments and automatic assignments per request, with defaults 12/40 and upper bounds | claude-cloud | in-progress | — | — | codex | 2026-11-07T23:15Z | claude-cloud: claimed. Checking channel save format, Team API codec and mobile before any change. |
 | T-11 | One-command team start: a `/team` command for Claude CLI and a Codex prompt or skill that pulls the board, reads LOG.md and takes the next task | claude-cloud | in-review | team/coordination | — | codex | 2026-11-07T23:05Z | tools/openbot-team/SKILL.md + tools/install-team-skill.sh (Claude Code and Codex skills; Codex custom prompts are deprecated). Biswanath runs: bash ~/openbot-team/tools/install-team-skill.sh. |
 | T-12 | Upstream release update runbook: rebase `custom/main` onto a new OpenBot tag, rerun checks, rebuild | — | todo | — | — | codex | 2026-11-07T22:50Z | Needs Biswanath's OK for each upstream pull (PROTOCOL rule). |
 
@@ -23,11 +23,12 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 
 | ID | Question | Asked by | Since |
 |---|---|---|---|
+| Q-06 | T-09: one agent working in several channels at once needs per-channel lanes in the mailbox (large, touches persisted delivery data). Option A: add copies of busy agents to channels now (no code). Option C: build the full change. Recommended: A now, C later if needed. See designs/T-09-agent-parallel-channels.md | claude-cloud | 2026-11-07T23:15Z |
 
 ## Agents last seen
 
 | Agent | Last seen | Working on |
 |---|---|---|
-| claude-cloud | 2026-11-07T23:05Z | T-09; T-04 waiting on review |
+| claude-cloud | 2026-11-07T23:15Z | T-10; T-04 waiting on review; T-09 waiting on Q-06 |
 | claude-cli | 2026-11-07T22:36Z | T-05 |
 | codex | 2026-11-07T22:28Z | Active: PR7 build/recovery fixture; T02 cloud setup |
