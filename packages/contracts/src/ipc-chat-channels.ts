@@ -18,8 +18,9 @@ export const CHANNEL_TASK_CANCEL_CAPABILITY = "channel-task-cancel-v1";
  * their own messages stay their own in the transcript.
  */
 export const SIGNED_OUT_CHANNEL_MEMBER_ID = "local";
-export const CHANNEL_PARALLEL_LIMIT = 2;
-export const CHANNEL_ASSIGNMENT_LIMIT = 8;
+// custom/no-limits: raised from 2 active and 8 automatic assignments per request.
+export const CHANNEL_PARALLEL_LIMIT = 12;
+export const CHANNEL_ASSIGNMENT_LIMIT = 40;
 
 export interface ChannelMember {
   agentId: string;
