@@ -11,7 +11,8 @@
 #   6. Swap the staged app in; if that fails, put the old app back
 #
 # Test overrides (used by tools/test-build-openbot-custom.sh): APP_DIR, DATA_DIR, BACKUP_ROOT, SRC,
-# PREBUILT_APP (skips the toolchain and build), QUIT_TIMEOUT, REPO_URL, BUILD_CMD, SKIP_TOOLCHAIN.
+# PREBUILT_APP (skips the toolchain and build), QUIT_TIMEOUT, REPO_URL, BUILD_CMD, SKIP_TOOLCHAIN,
+# TEST_HOOK_AFTER_MOVE_ASIDE.
 set -euo pipefail
 
 REPO_URL="${REPO_URL:-https://github.com/CtrlAltElite007/openbot}"
@@ -22,17 +23,61 @@ BACKUP_ROOT="${BACKUP_ROOT:-$HOME/OpenBot/Downloads/openbot-backups}"
 SRC="${SRC:-$HOME/openbot-custom}"
 QUIT_TIMEOUT="${QUIT_TIMEOUT:-60}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
-STAGE="$(dirname "$APP_DIR")/.OpenBot-staging-$STAMP.app"
-PREVIOUS="$(dirname "$APP_DIR")/.OpenBot-previous-$STAMP.app"
+APPS="$(dirname "$APP_DIR")"
+LOCK="$APPS/.OpenBot-install.lock"
+WORK=""          # this run's own folder for the staged and the previous app
+STAGE=""
+PREVIOUS=""
+SWAPPING=false   # true from moving the old app aside until the new app is in place
 
 fail() { echo "STOPPED: $*" >&2; exit 1; }
-cleanup() { [ -e "$STAGE" ] && rm -rf "$STAGE"; return 0; }
-trap cleanup EXIT
+
+restore_previous() {
+  # Called on any exit. If the old app was moved aside and the new one is not in place, put it back.
+  if [ -n "$PREVIOUS" ] && [ -d "$PREVIOUS" ] && [ ! -e "$APP_DIR" ]; then
+    if mv "$PREVIOUS" "$APP_DIR"; then
+      echo "The previous app was put back at $APP_DIR." >&2
+    else
+      echo "ROLLBACK FAILED: $APP_DIR is missing. Your previous app is kept at $PREVIOUS." >&2
+      echo "Move it back with: mv \"$PREVIOUS\" \"$APP_DIR\"" >&2
+      KEEP_WORK=true
+    fi
+  fi
+}
+
+KEEP_WORK=false
+on_exit() {
+  status=$?
+  if $SWAPPING; then restore_previous; fi
+  if [ -n "$WORK" ] && [ -d "$WORK" ] && ! $KEEP_WORK; then rm -rf "$WORK"; fi
+  if [ -n "${LOCK_OWNED:-}" ]; then rm -rf "$LOCK"; fi
+  exit "$status"
+}
+trap on_exit EXIT
+trap 'echo "Interrupted." >&2; exit 130' INT TERM HUP
 
 openbot_running() {
-  # True while a process runs from the installed bundle. Only reads the process list; never kills.
-  pgrep -f "$APP_DIR/Contents/MacOS/" >/dev/null 2>&1
+  # 0: a process runs from the installed bundle; 1: none; anything else: the check itself failed.
+  # Only reads the process list; never kills.
+  local code=0
+  pgrep -f "$APP_DIR/Contents/MacOS/" >/dev/null || code=$?
+  case "$code" in
+    0) return 0 ;;
+    1) return 1 ;;
+    *) fail "could not check whether OpenBot is running (pgrep exit $code); nothing was changed" ;;
+  esac
 }
+
+# One install at a time. A second run stops here and does not touch the first run's files.
+if mkdir "$LOCK" 2>/dev/null; then
+  LOCK_OWNED=1
+  echo $$ > "$LOCK/pid"
+else
+  fail "another install is running (or a stale lock is left at $LOCK; remove it if no install runs)"
+fi
+WORK="$(mktemp -d "$APPS/.OpenBot-install-$STAMP-XXXXXX")" || fail "could not create a work folder in $APPS"
+STAGE="$WORK/OpenBot.app"
+PREVIOUS="$WORK/previous-OpenBot.app"
 
 # 1 + 2. Source and build
 if [ -n "${PREBUILT_APP:-}" ]; then
@@ -102,13 +147,14 @@ if [ -d "$APP_DIR" ]; then
   echo "Current app backed up to $BACKUP/OpenBot.app"
 fi
 
-# 6. Swap, with rollback
+# 6. Swap, with rollback (also on Ctrl-C or TERM, through the exit trap)
+SWAPPING=true
 if [ -d "$APP_DIR" ]; then
   mv "$APP_DIR" "$PREVIOUS" || fail "could not move the current app aside; nothing was replaced"
 fi
+eval "${TEST_HOOK_AFTER_MOVE_ASIDE:-}"
 if ! mv "$STAGE" "$APP_DIR"; then
-  [ -d "$PREVIOUS" ] && mv "$PREVIOUS" "$APP_DIR"
-  fail "could not install the new app; the previous app was put back"
+  fail "could not install the new app"
 fi
-if [ -d "$PREVIOUS" ]; then rm -rf "$PREVIOUS"; fi
+SWAPPING=false
 echo "Installed the custom OpenBot at $APP_DIR. Backups: $BACKUP"

@@ -29,7 +29,14 @@ S
 S
   cat > "$T/bin/pgrep" <<'S'
 #!/usr/bin/env bash
+[ -n "${PGREP_EXIT:-}" ] && exit "$PGREP_EXIT"
 [ -e "$RUNNING_FLAG" ]
+S
+  # FAIL_MV_TO_APP makes every move onto the installed app path fail (install and rollback).
+  cat > "$T/bin/mv" <<'S'
+#!/usr/bin/env bash
+if [ -n "${FAIL_MV_TO_APP:-}" ] && [ "${@: -1}" = "$APP_DIR" ]; then echo "mv: injected failure" >&2; exit 1; fi
+exec /bin/mv "$@"
 S
   printf '#!/usr/bin/env bash\nexit 0\n' > "$T/bin/xattr"
   chmod +x "$T/bin/"*
@@ -47,7 +54,7 @@ check() { # name, condition
 }
 
 setup; run; code=$?
-check "success installs the new app" '[ $code -eq 0 ] && [ "$(installed)" = new ] && [ -f $T/backups/*/data/openbot.db ] && [ -f $T/backups/*/OpenBot.app/Contents/Info.plist ] && ! ls -d $T/Applications/.OpenBot-* >/dev/null 2>&1'
+check "success installs the new app and leaves no work folder or lock" '[ $code -eq 0 ] && [ "$(installed)" = new ] && [ -f $T/backups/*/data/openbot.db ] && [ -f $T/backups/*/OpenBot.app/Contents/Info.plist ] && ! ls -d $T/Applications/.OpenBot-* >/dev/null 2>&1'
 
 setup; FAIL_DITTO_MATCH="$T/data" run; code=$?
 check "#14 data backup failure keeps the old app" '[ $code -ne 0 ] && [ "$(installed)" = old ] && grep -q "data backup failed" $T/out'
@@ -63,6 +70,18 @@ check "#15 app that quits: install continues" '[ $code -eq 0 ] && [ "$(installed
 
 setup; FAIL_CODESIGN=1 run; code=$?
 check "#16 signing failure keeps the old app and removes staging" '[ $code -ne 0 ] && [ "$(installed)" = old ] && ! ls -d $T/Applications/.OpenBot-* >/dev/null 2>&1'
+
+setup; PGREP_EXIT=2 run; code=$?
+check "#15 a failed process check stops before backup or replacement" '[ $code -ne 0 ] && [ "$(installed)" = old ] && [ -z "$(ls -A $T/backups)" ] && grep -q "could not check" $T/out'
+
+setup; TEST_HOOK_AFTER_MOVE_ASIDE='kill -TERM $$' run; code=$?
+check "#16 TERM after moving the old app aside puts it back" '[ $code -ne 0 ] && [ "$(installed)" = old ] && grep -q "put back" $T/out && ! ls -d $T/Applications/.OpenBot-* >/dev/null 2>&1'
+
+setup; FAIL_MV_TO_APP=1 run; code=$?
+check "#16 failed install and failed rollback name the kept copy" '[ $code -ne 0 ] && grep -q "ROLLBACK FAILED" $T/out && [ -f "$(sed -n "s/.*Your previous app is kept at \(.*\)\.$/\1/p" $T/out)/Contents/Info.plist" ]'
+
+setup; mkdir "$T/Applications/.OpenBot-install.lock"; mkdir "$T/Applications/.OpenBot-install-other"; run; code=$?
+check "#16 a second run stops at the lock and leaves the first run's files" '[ $code -ne 0 ] && grep -q "another install is running" $T/out && [ -d "$T/Applications/.OpenBot-install-other" ] && [ -d "$T/Applications/.OpenBot-install.lock" ] && [ "$(installed)" = old ]'
 
 setup; FAIL_DITTO_MATCH="$T/new" run; code=$?
 check "#16 staging failure keeps the old app" '[ $code -ne 0 ] && [ "$(installed)" = old ]'
