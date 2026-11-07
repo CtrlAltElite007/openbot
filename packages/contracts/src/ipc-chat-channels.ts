@@ -24,14 +24,17 @@ export const CHANNEL_ASSIGNMENT_LIMIT = 40;
 /** custom/main fork (T-10): the highest values that a channel can set in its settings. */
 export const CHANNEL_PARALLEL_LIMIT_MAX = 32;
 /**
- * Each automatic assignment adds the child task to its parent's `dependencies`, and a stored task
- * (and the released Team API codecs) accept at most `INPUT_LIMITS.agents` (100) dependencies. A higher
- * limit would let the 101st handoff fail as an invalid task, so the setting stops at that bound (#12).
+ * Each automatic assignment and each member reply adds a child task to its parent's `dependencies`,
+ * and a stored task (and the released Team API codecs) accept at most `INPUT_LIMITS.agents` (100). The
+ * setting stops at 90, so 90 handoffs and the 6 member replies of a request fit (#12). The service
+ * also refuses a handoff or reply, with a reason, when a task already holds 100 subtasks.
  */
-export const CHANNEL_ASSIGNMENT_LIMIT_MAX = INPUT_LIMITS.agents;
+export const CHANNEL_ASSIGNMENT_LIMIT_MAX = 90;
 /** The choices that the channel settings offer. Each list contains the default. */
 export const CHANNEL_PARALLEL_LIMIT_CHOICES = [2, 4, 8, 12, 16, 24, 32] as const;
-export const CHANNEL_ASSIGNMENT_LIMIT_CHOICES = [8, 20, 40, 60, 80, 100] as const;
+export const CHANNEL_ASSIGNMENT_LIMIT_CHOICES = [8, 20, 40, 60, 80, 90] as const;
+/** The most subtasks (`dependencies`) one stored task holds. */
+export const CHANNEL_TASK_DEPENDENCY_LIMIT = INPUT_LIMITS.agents;
 
 /**
  * The limits of one channel (custom/main fork, T-10). `parallel` is the number of assignments that
@@ -109,13 +112,19 @@ export interface ChannelDraft {
    */
   icon?: ChannelIcon | null;
   /**
-   * custom/main fork (T-10). Absent keeps the stored limits, and null returns to the defaults. Only
-   * this computer keeps them, as for `icon`.
+   * custom/main fork (T-10). A save sends only the limits it changes: the service merges them into
+   * the stored limits, so a rename or a failed save cannot carry an old value over a newer one (#13).
+   * Absent keeps the stored limits, and null returns to the defaults. Only this computer keeps them.
    */
-  limits?: ChannelLimits | null;
+  limits?: Partial<ChannelLimits> | null;
 }
 
-export interface Channel extends ChannelDraft {
+/** A draft after the service merged its limit change: the fields a stored channel keeps. */
+export type SavedChannelDraft = Omit<ChannelDraft, "limits"> & { limits?: ChannelLimits | null };
+
+export interface Channel extends Omit<ChannelDraft, "limits"> {
+  /** The stored limits of the channel, always both values. Absent or null: the defaults. */
+  limits?: ChannelLimits | null;
   id: string;
   archived: boolean;
   revision: number;
@@ -294,18 +303,38 @@ function dropUnreadableLimits(channel: DynamicRecord | undefined): DynamicRecord
   return rest;
 }
 
+function isLimit(value: unknown, max: number): value is number {
+  return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= max;
+}
+
 function isChannelLimits(value: unknown): value is ChannelLimits {
   return (
     isDynamicRecord(value) &&
-    typeof value.parallel === "number" &&
-    Number.isInteger(value.parallel) &&
-    value.parallel >= 1 &&
-    value.parallel <= CHANNEL_PARALLEL_LIMIT_MAX &&
-    typeof value.assignmentsPerRequest === "number" &&
-    Number.isInteger(value.assignmentsPerRequest) &&
-    value.assignmentsPerRequest >= 1 &&
-    value.assignmentsPerRequest <= CHANNEL_ASSIGNMENT_LIMIT_MAX
+    isLimit(value.parallel, CHANNEL_PARALLEL_LIMIT_MAX) &&
+    isLimit(value.assignmentsPerRequest, CHANNEL_ASSIGNMENT_LIMIT_MAX)
   );
+}
+
+/** A limit change in a draft: one or both values, each in bounds, and nothing else. */
+function isChannelLimitsPatch(value: unknown): value is Partial<ChannelLimits> {
+  if (!isDynamicRecord(value)) return false;
+  const keys = Object.keys(value);
+  return (
+    keys.length > 0 &&
+    keys.every((key) => key === "parallel" || key === "assignmentsPerRequest") &&
+    (value.parallel === undefined || isLimit(value.parallel, CHANNEL_PARALLEL_LIMIT_MAX)) &&
+    (value.assignmentsPerRequest === undefined || isLimit(value.assignmentsPerRequest, CHANNEL_ASSIGNMENT_LIMIT_MAX))
+  );
+}
+
+/** The stored limits after a save: absent keeps them, null clears them, a patch changes only its values. */
+export function mergeChannelLimits(
+  stored: ChannelLimits | null | undefined,
+  patch: Partial<ChannelLimits> | null | undefined,
+): ChannelLimits | null | undefined {
+  if (patch === undefined) return stored;
+  if (patch === null) return null;
+  return { ...channelLimits({ limits: stored }), ...patch };
 }
 
 export function isChannelDraft(value: unknown): value is ChannelDraft {
@@ -323,7 +352,7 @@ export function isChannelDraft(value: unknown): value is ChannelDraft {
     (value.leadAgentId === null ||
       (isIdentifier(value.leadAgentId) && value.members.some((member) => member.agentId === value.leadAgentId))) &&
     (value.icon === undefined || value.icon === null || isChannelIcon(value.icon)) &&
-    (value.limits === undefined || value.limits === null || isChannelLimits(value.limits))
+    (value.limits === undefined || value.limits === null || isChannelLimitsPatch(value.limits))
   );
 }
 
@@ -377,6 +406,7 @@ export function isChannel(value: unknown): value is Channel {
   return (
     isDynamicRecord(value) &&
     isChannelDraft(value) &&
+    (value.limits === undefined || value.limits === null || isChannelLimits(value.limits)) &&
     isIdentifier(value.id) &&
     typeof value.archived === "boolean" &&
     sequence(value.revision) &&

@@ -244,11 +244,6 @@ export function ChannelEditor(props: ChannelEditorProps) {
                 members: previous.members.map((member) => ({ ...member })),
                 leadAgentId: previous.leadAgentId,
               };
-        // Limits are not in `draftFrom`. A limit change queued behind another one starts from the
-        // limits that the save before it sent to this channel, so the earlier change is not reverted
-        // when the reader leaves the channel before that save lands (#13).
-        if (draft.limits === undefined && sent?.channelId === targetId && sent.draft.limits)
-          draft.limits = { ...sent.draft.limits };
         patch?.(draft);
         sent = { channelId: targetId, draft };
         return channels.command({
@@ -414,13 +409,12 @@ export function ChannelEditor(props: ChannelEditorProps) {
                 choices={CHANNEL_PARALLEL_LIMIT_CHOICES}
                 defaultValue={CHANNEL_PARALLEL_LIMIT}
                 label={t("channel.settings.parallelLimit")}
-                onChange={(parallel) => {
-                  // Read now, while this channel is open; the save can run after the reader left it.
-                  const base = channelLimits(current());
+                onChange={(parallel) =>
+                  // Only the changed value: the service merges it into the stored limits (#13).
                   void commit((draft) => {
-                    draft.limits = { ...(draft.limits ?? base), parallel };
-                  });
-                }}
+                    draft.limits = { parallel };
+                  })
+                }
               />
             </SettingsField>
             <SettingsField label={t("channel.settings.assignmentLimit")}>
@@ -429,12 +423,11 @@ export function ChannelEditor(props: ChannelEditorProps) {
                 choices={CHANNEL_ASSIGNMENT_LIMIT_CHOICES}
                 defaultValue={CHANNEL_ASSIGNMENT_LIMIT}
                 label={t("channel.settings.assignmentLimit")}
-                onChange={(assignmentsPerRequest) => {
-                  const base = channelLimits(current());
+                onChange={(assignmentsPerRequest) =>
                   void commit((draft) => {
-                    draft.limits = { ...(draft.limits ?? base), assignmentsPerRequest };
-                  });
-                }}
+                    draft.limits = { assignmentsPerRequest };
+                  })
+                }
               />
             </SettingsField>
           </>

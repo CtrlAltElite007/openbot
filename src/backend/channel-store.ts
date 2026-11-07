@@ -4,7 +4,6 @@ import {
   CHANNEL_PREVIEW_LIMIT,
   CHANNEL_ROUTING_EVENT_ITEM_TYPE_PREFIX,
   type Channel,
-  type ChannelDraft,
   type ChannelMessage,
   type ChannelPage,
   type ChannelSummary,
@@ -14,6 +13,7 @@ import {
   decodeChannel,
   isChannelMessage,
   isChannelTask,
+  type SavedChannelDraft,
   SIGNED_OUT_CHANNEL_MEMBER_ID,
 } from "@openbot/contracts/ipc";
 import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
@@ -254,7 +254,7 @@ export class ChannelStore {
     });
   }
 
-  create(channelId: string, draft: ChannelDraft): Channel {
+  create(channelId: string, draft: SavedChannelDraft): Channel {
     return { ...draft, id: channelId, archived: false, revision: 0, createdAt: new Date().toISOString() };
   }
 

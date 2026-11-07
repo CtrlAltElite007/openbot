@@ -9,6 +9,7 @@ import {
   type AgentSummary,
   type AvatarImageInput,
   CHANNEL_CHANGE_ITEM_TYPE,
+  CHANNEL_TASK_DEPENDENCY_LIMIT,
   type Channel,
   type ChannelCommand,
   type ChannelDraft,
@@ -25,7 +26,9 @@ import {
   type DeleteChannelMemoryInput,
   type DeleteChannelMessageInput,
   isContextResetMarker,
+  mergeChannelLimits,
   type QueueHold,
+  type SavedChannelDraft,
   type UpdateChannelMemoryInput,
 } from "@openbot/contracts/ipc";
 import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
@@ -658,7 +661,11 @@ export class ChannelService {
       for (const member of command.draft.members)
         if (!members.has(member.agentId) && !known.some((agent) => agent.id === member.agentId))
           return yield* channelFailure(new Error(sourceText("error.backend.channelMemberUnavailable")));
-      const channel = existing ?? (yield* channelSync(() => this.store.create(command.channelId, command.draft)));
+      // custom/main (T-10, #13): a draft carries only the limits it changes; merge them into the stored ones.
+      const { limits: limitPatch, ...draftFields } = command.draft;
+      const limits = mergeChannelLimits(existing?.limits, limitPatch);
+      const draft: SavedChannelDraft = limits === undefined ? draftFields : { ...draftFields, limits };
+      const channel = existing ?? (yield* channelSync(() => this.store.create(command.channelId, draft)));
       const assigned = (yield* channelSync(() => this.store.tasks(channel.id))).filter(
         (task) =>
           task.ownerAgentId &&
@@ -685,7 +692,7 @@ export class ChannelService {
           : [];
       const result = yield* channelSync(() =>
         this.store.update(
-          { ...channel, ...command.draft },
+          { ...channel, ...draft },
           {
             messages: notes,
             tasks: [
@@ -3247,6 +3254,12 @@ export class ChannelService {
         logger.warn("A channel reply was refused.", { channelId, agentId });
         return check;
       }
+      // A stored task holds at most CHANNEL_TASK_DEPENDENCY_LIMIT subtasks (#12); refuse before any write.
+      if (task.dependencies.length >= CHANNEL_TASK_DEPENDENCY_LIMIT)
+        return {
+          accepted: false,
+          reason: `This task already has ${CHANNEL_TASK_DEPENDENCY_LIMIT} subtasks, the most it can hold. Do not mention this; continue without the reply.`,
+        };
       const sender = { kind: "agent" as const, id: agentId, name: this.memberName(agentId) };
       const reply = this.message(channelId, task.id, sender, check.text, `${CHANNEL_REPLY_ID_PREFIX}${randomUUID()}`);
       reply.message.author = "assistant";
@@ -3356,6 +3369,13 @@ export class ChannelService {
       yield* this.interruptTasks(channelId, descendants(tasks, root.id));
       return { accepted: false, reason: "The user must continue or reassign the task." };
     }
+    // A stored task holds at most CHANNEL_TASK_DEPENDENCY_LIMIT subtasks (#12). Refuse before any write,
+    // so the handoff does not fail later as an invalid task.
+    if (tool === "channel_assign" && task.dependencies.length >= CHANNEL_TASK_DEPENDENCY_LIMIT)
+      return refuse(
+        `This task already has ${CHANNEL_TASK_DEPENDENCY_LIMIT} subtasks, the most it can hold. Report your result with channel_result, or ask the user to continue in a new request.`,
+        "subtask limit",
+      );
     const resources = Array.isArray(args.resources) && args.resources.every(isString) ? args.resources : [];
     // Reject an oversized list before the loop. The loop runs a blocking `realpathSync` per
     // workspace entry on the Electron main thread.
@@ -3371,6 +3391,11 @@ export class ChannelService {
     if (resources.some((resource) => resource.length > 4096))
       return refuse("A task resource path is longer than 4096 characters.");
     const dependencies = Array.isArray(args.dependencies) && args.dependencies.every(isString) ? args.dependencies : [];
+    // The task that keeps these dependencies must stay within the stored bound (#12).
+    const kept =
+      tool === "channel_transfer" ? new Set([...task.dependencies, ...dependencies]).size : dependencies.length;
+    if (kept > CHANNEL_TASK_DEPENDENCY_LIMIT)
+      return refuse(`Give at most ${CHANNEL_TASK_DEPENDENCY_LIMIT} dependencies for one task.`, "dependency limit");
     if (dependencies.some((id) => dependsOn(tasks, id, task.id) || !tasks.some((item) => item.id === id)))
       return refuse(
         "Each dependency must be the id of another task in this channel that does not depend on this task.",
