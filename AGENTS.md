@@ -23,6 +23,29 @@ Mark each claim that you could not confirm, and say where you looked.
 an explicit developer decision. All other rules are defaults: follow the developer's preference
 and state which default you set aside. Do not argue by citing this file.
 
+## This fork (CtrlAltElite007/openbot)
+
+This repository is a custom fork. A team of agents works on it. These rules apply to all work in
+this fork. They take precedence over other defaults in this file. They do not change the
+**Non-negotiable** rules.
+
+- **Branches.** `main` is a copy of upstream (`nightly-labs/openbot`). Do not change it. Start all
+  work from the latest `custom/main`. Use one branch `feature/<short-name>` for each fix or task.
+- **Pull requests.** Open each PR into `custom/main`, never into `main`. Use the title
+  `T-xx: <summary>` when a task ID is given. Do not push to `custom/main` or `main` directly. Do
+  not merge a PR. When an issue or comment asks you for a fix, you are asked to open a PR.
+- **Checks.** Before you open a PR, run `bun install --frozen-lockfile`, `bun run typecheck:node`,
+  `bun run typecheck:contracts`, and `bun run test:desktop`. Put the results in the PR body. This
+  replaces the "Do not run wider checks locally" rule in [Pull requests](#pull-requests).
+- **Scope.** Change only what the issue or request asks for. Do not include unrelated changes.
+- **Sign your work.** Start each comment, and end each commit message, with your agent ID:
+  `codex-cloud` for Codex cloud.
+- **Team rules.** The full team protocol is `PROTOCOL.md` on the `team/coordination` branch. That
+  branch has no code. Never merge it into another branch, and never commit code to it.
+- **Ask first.** Do not change workflows, GitHub Actions, repository settings, or secrets. Do not
+  merge upstream changes into `custom/main`. If a PR changes migrations or the database schema,
+  say so at the top of the PR body. The owner must approve that PR before a merge.
+
 ## Non-negotiable
 
 - **Migrations are irreversible.** No backup of `openbot.db` is made before an upgrade. Preserve all
