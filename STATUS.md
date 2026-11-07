@@ -12,11 +12,11 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 | T-04 | Fix #3 (updater bypass in newer-database recovery) and #4 (reply E2E still expects 2) | claude-cloud | in-review | feature/fix-updater-recovery-and-reply-e2e | [#7](https://github.com/CtrlAltElite007/openbot/pull/7) | codex | 2026-11-07T22:45Z | claude-cloud: #8 fixed at f93f8868 (backup wording, 15 locales; i18n:check and test pass). Needs codex review of new head. Seventh-call denial proof stays in #4 / T-05. |
 | T-05 | E2E scripts for raised limits: 12 active / 13th queued, 40/41 assignments, stop/resume/cancel (rest of #4) | claude-cli | in-progress | feature/limit-e2e-scripts | — | codex | 2026-11-07T22:36Z | Script and fake agent written (`scripts/channel-limits-e2e.ts`, `scripts/provider-fakes/agents/channel-limits.ts`); lint and typecheck pass. Next: first run in the dev app (own dev profile). |
 | T-06 | Shared team memory: `memory/` on team/coordination (people, preferences, decisions, project facts) that Claude and Codex both read and write; CLAUDE.md/AGENTS.md pointers; import of Codex `memory_summary.md` facts | claude-cloud | in-review | team/coordination | — | codex | 2026-11-07T22:55Z | memory/ added (README rules, preferences, decisions, project facts); PROTOCOL.md now says to read it. Public-repo rule: no secrets or work/private data. Local CLAUDE.md/AGENTS.md pointers come with T-11. codex: review the facts for accuracy. |
-| T-07 | `CONTEXT.md`: goals of this fork and team, current state, constraints (Biswanath's work rules: evidence-bounded, reversible, ask before deploy) | claude-cloud | in-progress | team/coordination | — | codex | 2026-11-07T22:55Z | Next after T-06. |
+| T-07 | `CONTEXT.md`: goals of this fork and team, current state, constraints (Biswanath's work rules: evidence-bounded, reversible, ask before deploy) | claude-cloud | in-review | team/coordination | — | codex | 2026-11-07T23:00Z | CONTEXT.md added (goal, the two OpenBot problems, current state, what done means, fixed constraints). PROTOCOL.md points to it. codex: check for wrong facts. |
 | T-08 | Speed up the OpenBot PM workflow: risk tiers in `~/OpenBot/Bridge/pm_workflow.py` brief (docs/research → 1 owner + quick review; code → dev tests + review; auth/storage/migrations → full QA) | claude-cli | todo | — (local file on the Mac) | — | codex | 2026-11-07T22:50Z | Local file outside the repo, so claude-cli. Keep its tests passing (`python3 -m unittest discover -v`). |
 | T-09 | Let one agent run work from more than one channel at once (upstream #5261): relax the owner-busy rule for providers with concurrent turns | claude-cloud | todo | feature/agent-parallel-channels | — | codex | 2026-11-07T22:50Z | Code. Needs careful review: scheduler and resource rules. |
 | T-10 | Channel limits in channel settings (upstream #4857): active assignments and automatic assignments per request, with defaults 12/40 and upper bounds | — | todo | — | — | codex | 2026-11-07T22:50Z | Touches channel save format; check Team API codec and mobile. |
-| T-11 | One-command team start: a `/team` command for Claude CLI and a Codex prompt or skill that pulls the board, reads LOG.md and takes the next task | claude-cloud | todo | team/coordination | — | codex | 2026-11-07T22:50Z | Files live on the team branch; Biswanath copies them to ~/.claude and ~/.codex. |
+| T-11 | One-command team start: a `/team` command for Claude CLI and a Codex prompt or skill that pulls the board, reads LOG.md and takes the next task | claude-cloud | in-progress | team/coordination | — | codex | 2026-11-07T23:00Z | Files live on the team branch; Biswanath copies them to ~/.claude and ~/.codex. |
 | T-12 | Upstream release update runbook: rebase `custom/main` onto a new OpenBot tag, rerun checks, rebuild | — | todo | — | — | codex | 2026-11-07T22:50Z | Needs Biswanath's OK for each upstream pull (PROTOCOL rule). |
 
 ## Needs Biswanath
@@ -28,6 +28,6 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 
 | Agent | Last seen | Working on |
 |---|---|---|
-| claude-cloud | 2026-11-07T22:45Z | T-04 (waiting on review) |
+| claude-cloud | 2026-11-07T23:00Z | T-11; T-04 waiting on review |
 | claude-cli | 2026-11-07T22:36Z | T-05 |
 | codex | 2026-11-07T22:28Z | Active: PR7 build/recovery fixture; T02 cloud setup |
