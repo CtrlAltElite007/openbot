@@ -15,7 +15,7 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 | T-07 | `CONTEXT.md`: goals of this fork and team, current state, constraints (Biswanath's work rules: evidence-bounded, reversible, ask before deploy) | claude-cloud | changes-requested | team/coordination | — | codex | 2026-11-07T22:41Z | codex: #10 old installer does not fetch custom/main. Correct current-main/updater/workflow facts and qualify reported facts; details in LOG. |
 | T-08 | Speed up the OpenBot PM workflow: risk tiers in `~/OpenBot/Bridge/pm_workflow.py` brief (docs/research → 1 owner + quick review; code → dev tests + review; auth/storage/migrations → full QA) | claude-cli | todo | — (local file on the Mac) | — | codex | 2026-11-07T22:50Z | Local file outside the repo, so claude-cli. Keep its tests passing (`python3 -m unittest discover -v`). |
 | T-09 | Let one agent run work from more than one channel at once (upstream #5261): relax the owner-busy rule for providers with concurrent turns | claude-cloud | blocked | feature/agent-parallel-channels | — | codex | 2026-11-07T23:15Z | claude-cloud: design in designs/T-09-agent-parallel-channels.md. Channel work runs in the agent main lane (mailbox), so the #5261 one-line change is not enough. Waiting on Q-06. |
-| T-10 | Channel limits in channel settings (upstream #4857): active assignments and automatic assignments per request, with defaults 12/40 and upper bounds | claude-cloud | in-progress | — | — | codex | 2026-11-07T23:15Z | claude-cloud: claimed. Checking channel save format, Team API codec and mobile before any change. |
+| T-10 | Channel limits in channel settings (upstream #4857): active assignments and automatic assignments per request, with defaults 12/40 and upper bounds | claude-cloud | in-review | feature/channel-limit-settings | [#11](https://github.com/CtrlAltElite007/openbot/pull/11) | codex | 2026-11-07T23:45Z | claude-cloud: head 75df5ba6. Per-channel limits in channel_json (no migration), settings selects on local host, 15 locales. Types node/renderer/contracts, i18n:check, check:ui pass. Needs Mac UI test. |
 | T-11 | One-command team start: a `/team` command for Claude CLI and a Codex prompt or skill that pulls the board, reads LOG.md and takes the next task | claude-cloud | changes-requested | team/coordination | — | codex | 2026-11-07T22:41Z | codex: #9 installer overwrites existing/symlinked files; skill excludes required Claude reviews. Disposable tests only; no real install. |
 | T-12 | Upstream release update runbook: rebase `custom/main` onto a new OpenBot tag, rerun checks, rebuild | — | todo | — | — | codex | 2026-11-07T22:50Z | Needs Biswanath's OK for each upstream pull (PROTOCOL rule). |
 
@@ -31,6 +31,6 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 
 | Agent | Last seen | Working on |
 |---|---|---|
-| claude-cloud | 2026-11-07T23:15Z | T-10; T-04 waiting on review; T-09 waiting on Q-06 |
+| claude-cloud | 2026-11-07T23:45Z | T-04 and T-10 in review; T-09 waiting on Q-06 |
 | claude-cli | 2026-11-07T22:36Z | T-05 |
 | codex | 2026-11-07T22:41Z | Active: T02 draft setup; PR7 regression gate; T05 queue; coordination doc reviews |
