@@ -18,4 +18,7 @@ export const messages = {
   "startup.newerDataDownload": "Baixar OpenBot",
   "startup.newerDataGuide": "Abrir guia",
   "startup.newerDataQuit": "Sair",
+  "startup.customNewerDataTitle": "Este OpenBot personalizado é mais antigo que seus dados",
+  "startup.customNewerDataBody":
+    "Uma versão mais recente do OpenBot salvou seus dados, e esta versão personalizada ({version}) não consegue abri-los. Compile novamente o app personalizado a partir do custom/main mais recente, ou restaure o backup de dados que o script de compilação criou.\n\nO OpenBot oficial não tem as alterações personalizadas. Seus dados locais não foram redefinidos nem substituídos.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -18,4 +18,7 @@ export const messages = {
   "startup.newerDataDownload": "OpenBot laden",
   "startup.newerDataGuide": "Anleitung öffnen",
   "startup.newerDataQuit": "Beenden",
+  "startup.customNewerDataTitle": "Dieses angepasste OpenBot ist älter als deine Daten",
+  "startup.customNewerDataBody":
+    "Eine neuere Version von OpenBot hat deine Daten gespeichert, und diese angepasste Version ({version}) kann sie nicht öffnen. Baue die angepasste App aus dem neuesten custom/main neu, oder stelle die Datensicherung wieder her, die das Build-Skript erstellt hat.\n\nDas offizielle OpenBot enthält die angepassten Änderungen nicht. Deine lokalen Daten wurden nicht zurückgesetzt oder überschrieben.",
 } as const satisfies PartialTranslation<typeof source>;

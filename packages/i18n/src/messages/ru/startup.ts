@@ -18,4 +18,7 @@ export const messages = {
   "startup.newerDataDownload": "Скачать OpenBot",
   "startup.newerDataGuide": "Открыть руководство",
   "startup.newerDataQuit": "Выйти",
+  "startup.customNewerDataTitle": "Эта собственная сборка OpenBot старше ваших данных",
+  "startup.customNewerDataBody":
+    "Более новая версия OpenBot сохранила ваши данные, и эта собственная сборка ({version}) не может их открыть. Пересоберите приложение из последней ветки custom/main или восстановите резервную копию данных, созданную скриптом сборки.\n\nВ официальном OpenBot нет изменений собственной сборки. Ваши локальные данные не были сброшены или перезаписаны.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -5,16 +5,17 @@
 //
 // It checks that `channel_reply` posts a reply to the other member's message, that the other member
 // gets one turn for it and its answer replies to the reply, that the caller waits for that answer and
-// continues after it, and that a request that asks for more
-// replies than the limit gets no more than two. The model does the tool calls, so a model that does
-// not follow the instructions fails a step. It makes its own channel and deletes it.
+// continues after it, and that a request that asks for one reply more than the limit gets exactly
+// the limit: six replies, and the seventh is refused (the custom/main fork raised the limit from
+// two). The model does the tool calls, so a model that does not follow the instructions fails a step. It makes its own channel and deletes it.
 // Writes .openbot-build/channel-reply-e2e/report.json.
 import assert from "node:assert/strict";
 import type { ChannelMessage, ChannelPage, ChannelTask } from "@openbot/contracts/ipc";
 import { ChannelClient, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 
 const REPLY_PREFIX = "channel-reply-";
-const LIMIT = 2;
+// The expected contract is written out, not imported, so a change of CHANNEL_REPLY_LIMIT fails here.
+const LIMIT = 6;
 
 interface Report {
   target?: { messageId: string; text: string };
@@ -128,11 +129,11 @@ try {
   report.final = final?.message.text ?? null;
   assert.ok(final && final.sequence > answer.sequence, "A did not continue after B's answer.");
 
-  // A request that asks for more replies than the limit gets the limit.
+  // A request that asks for one reply more than the limit gets the limit, and no more.
   const third = await ask(
     channel.id,
     a.id,
-    `Call channel_reply three times, one call after the other, each with messageId "${target.id}" and the text "Say one more bird name." Then reply with the single word DONE.`,
+    `Call channel_reply ${LIMIT + 1} times, one call after the other, each with messageId "${target.id}" and the text "Say one more bird name." Then reply with the single word DONE.`,
     "A tries more replies than the limit",
   );
   const run = new Set(third.run.map((task) => task.id));
@@ -142,6 +143,7 @@ try {
   report.limit = { replies: replies.length, texts: replies.map((message) => message.message.text) };
   assert.ok(replies.length >= 1, "A posted no reply in the limit run.");
   assert.ok(replies.length <= LIMIT, `The run has more than ${LIMIT} member replies.`);
+  assert.equal(replies.length, LIMIT, `The run stopped before ${LIMIT} member replies; the limit is ${LIMIT}.`);
 
   report.passed = true;
 } finally {
