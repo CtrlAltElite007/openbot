@@ -221,7 +221,7 @@ Only assignments and awaited results start turns. Completed child results are co
 owner returns. In the custom/main fork, each channel has its own limits (`Channel.limits`, set in
 the channel settings on this computer): active assignments per channel (default
 `CHANNEL_PARALLEL_LIMIT`, 12, at most 32) and automatic assignments per root request (default
-`CHANNEL_ASSIGNMENT_LIMIT`, 40, at most 200). A channel without `limits` uses the defaults. The
+`CHANNEL_ASSIGNMENT_LIMIT`, 40, at most 100: each handoff adds a dependency to its parent, and a task holds at most 100). A channel without `limits` uses the defaults. The
 Team API channel codecs do not carry `limits`, so a save from a remote client keeps the stored ones.
 
 An agent can also give work to a channel from another conversation, such as its direct chat with

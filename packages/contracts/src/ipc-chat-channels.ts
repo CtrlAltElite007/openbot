@@ -23,10 +23,15 @@ export const CHANNEL_PARALLEL_LIMIT = 12;
 export const CHANNEL_ASSIGNMENT_LIMIT = 40;
 /** custom/main fork (T-10): the highest values that a channel can set in its settings. */
 export const CHANNEL_PARALLEL_LIMIT_MAX = 32;
-export const CHANNEL_ASSIGNMENT_LIMIT_MAX = 200;
+/**
+ * Each automatic assignment adds the child task to its parent's `dependencies`, and a stored task
+ * (and the released Team API codecs) accept at most `INPUT_LIMITS.agents` (100) dependencies. A higher
+ * limit would let the 101st handoff fail as an invalid task, so the setting stops at that bound (#12).
+ */
+export const CHANNEL_ASSIGNMENT_LIMIT_MAX = INPUT_LIMITS.agents;
 /** The choices that the channel settings offer. Each list contains the default. */
 export const CHANNEL_PARALLEL_LIMIT_CHOICES = [2, 4, 8, 12, 16, 24, 32] as const;
-export const CHANNEL_ASSIGNMENT_LIMIT_CHOICES = [8, 20, 40, 80, 120, 200] as const;
+export const CHANNEL_ASSIGNMENT_LIMIT_CHOICES = [8, 20, 40, 60, 80, 100] as const;
 
 /**
  * The limits of one channel (custom/main fork, T-10). `parallel` is the number of assignments that
