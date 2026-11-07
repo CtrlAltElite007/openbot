@@ -20,5 +20,5 @@ export const messages = {
   "startup.newerDataQuit": "Stoppen",
   "startup.customNewerDataTitle": "Deze aangepaste OpenBot is ouder dan je gegevens",
   "startup.customNewerDataBody":
-    "Een nieuwere versie van OpenBot heeft je gegevens opgeslagen, en deze aangepaste versie ({version}) kan ze niet openen. Bouw de aangepaste app opnieuw vanaf de nieuwste custom/main, of zet de gegevensback-up terug die het buildscript heeft gemaakt.\n\nDe officiële OpenBot heeft de aangepaste wijzigingen niet. Je lokale gegevens zijn niet gereset of overschreven.",
+    "Een nieuwere versie van OpenBot heeft je gegevens opgeslagen, en deze aangepaste versie ({version}) kan ze niet openen. Bouw de aangepaste app opnieuw vanaf de nieuwste custom/main, of zet een back-up van je gegevens terug als je die hebt.\n\nDe officiële OpenBot heeft de aangepaste wijzigingen niet. Je lokale gegevens zijn niet gereset of overschreven.",
 } as const satisfies PartialTranslation<typeof source>;

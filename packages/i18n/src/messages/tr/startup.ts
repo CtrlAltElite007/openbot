@@ -20,5 +20,5 @@ export const messages = {
   "startup.newerDataQuit": "Çık",
   "startup.customNewerDataTitle": "Bu özel OpenBot sürümü verilerinizden daha eski",
   "startup.customNewerDataBody":
-    "OpenBot'un daha yeni bir sürümü verilerinizi kaydetti ve bu özel sürüm ({version}) onları açamıyor. Özel uygulamayı en son custom/main dalından yeniden derleyin veya derleme betiğinin oluşturduğu veri yedeğini geri yükleyin.\n\nResmi OpenBot özel değişiklikleri içermez. Yerel verileriniz sıfırlanmadı veya üzerine yazılmadı.",
+    "OpenBot'un daha yeni bir sürümü verilerinizi kaydetti ve bu özel sürüm ({version}) onları açamıyor. Özel uygulamayı en son custom/main dalından yeniden derleyin veya varsa verilerinizin bir yedeğini geri yükleyin.\n\nResmi OpenBot özel değişiklikleri içermez. Yerel verileriniz sıfırlanmadı veya üzerine yazılmadı.",
 } as const satisfies PartialTranslation<typeof source>;

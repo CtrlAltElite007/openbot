@@ -20,5 +20,5 @@ export const messages = {
   "startup.newerDataQuit": "Zakończ",
   "startup.customNewerDataTitle": "Ta niestandardowa wersja OpenBot jest starsza niż Twoje dane",
   "startup.customNewerDataBody":
-    "Nowsza wersja OpenBot zapisała Twoje dane, a ta niestandardowa wersja ({version}) nie może ich otworzyć. Zbuduj ponownie niestandardową aplikację z najnowszej gałęzi custom/main albo przywróć kopię zapasową danych utworzoną przez skrypt budowania.\n\nOficjalny OpenBot nie zawiera niestandardowych zmian. Twoje dane lokalne nie zostały zresetowane ani nadpisane.",
+    "Nowsza wersja OpenBot zapisała Twoje dane, a ta niestandardowa wersja ({version}) nie może ich otworzyć. Zbuduj ponownie niestandardową aplikację z najnowszej gałęzi custom/main albo przywróć kopię zapasową danych, jeśli ją masz.\n\nOficjalny OpenBot nie zawiera niestandardowych zmian. Twoje dane lokalne nie zostały zresetowane ani nadpisane.",
 } as const satisfies PartialTranslation<typeof source>;

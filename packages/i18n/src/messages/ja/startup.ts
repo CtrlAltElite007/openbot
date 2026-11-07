@@ -20,5 +20,5 @@ export const messages = {
   "startup.newerDataQuit": "終了",
   "startup.customNewerDataTitle": "このカスタム版 OpenBot はデータより古いバージョンです",
   "startup.customNewerDataBody":
-    "新しいバージョンの OpenBot がデータを保存したため、このカスタム版 ({version}) では開けません。最新の custom/main からカスタム版アプリをビルドし直すか、ビルドスクリプトが作成したデータのバックアップを復元してください。\n\n公式の OpenBot にはカスタムの変更が含まれていません。ローカルデータはリセットも上書きもされていません。",
+    "新しいバージョンの OpenBot がデータを保存したため、このカスタム版 ({version}) では開けません。最新の custom/main からカスタム版アプリをビルドし直すか、データのバックアップがあれば復元してください。\n\n公式の OpenBot にはカスタムの変更が含まれていません。ローカルデータはリセットも上書きもされていません。",
 } as const satisfies PartialTranslation<typeof source>;

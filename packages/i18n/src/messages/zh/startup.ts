@@ -20,5 +20,5 @@ export const messages = {
   "startup.newerDataQuit": "退出",
   "startup.customNewerDataTitle": "此自定义版 OpenBot 比你的数据旧",
   "startup.customNewerDataBody":
-    "较新版本的 OpenBot 保存了你的数据，此自定义版本（{version}）无法打开这些数据。请从最新的 custom/main 重新构建自定义应用，或恢复构建脚本创建的数据备份。\n\n官方 OpenBot 不包含这些自定义更改。你的本地数据未被重置或覆盖。",
+    "较新版本的 OpenBot 保存了你的数据，此自定义版本（{version}）无法打开这些数据。请从最新的 custom/main 重新构建自定义应用，或在你有数据备份时恢复该备份。\n\n官方 OpenBot 不包含这些自定义更改。你的本地数据未被重置或覆盖。",
 } as const satisfies PartialTranslation<typeof source>;

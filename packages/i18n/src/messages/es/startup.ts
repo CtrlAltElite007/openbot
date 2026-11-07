@@ -20,5 +20,5 @@ export const messages = {
   "startup.newerDataQuit": "Salir",
   "startup.customNewerDataTitle": "Este OpenBot personalizado es más antiguo que tus datos",
   "startup.customNewerDataBody":
-    "Una versión más reciente de OpenBot guardó tus datos, y esta versión personalizada ({version}) no puede abrirlos. Vuelve a compilar la app personalizada desde el custom/main más reciente, o restaura la copia de seguridad de datos que creó el script de compilación.\n\nEl OpenBot oficial no tiene los cambios personalizados. Tus datos locales no se restablecieron ni se sobrescribieron.",
+    "Una versión más reciente de OpenBot guardó tus datos, y esta versión personalizada ({version}) no puede abrirlos. Vuelve a compilar la app personalizada desde el custom/main más reciente, o restaura una copia de seguridad de tus datos si tienes una.\n\nEl OpenBot oficial no tiene los cambios personalizados. Tus datos locales no se restablecieron ni se sobrescribieron.",
 } as const satisfies PartialTranslation<typeof source>;
