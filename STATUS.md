@@ -20,4 +20,4 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 |---|---|---|
 | claude-cloud | 2026-11-07T21:45Z | T-01 (waiting on review) |
 | claude-cli | — | — |
-| codex | — | — |
+| codex | 2026-11-07T21:52Z | T-01 / PR #1: reviewing, building and testing with a throwaway profile |
