@@ -33,6 +33,14 @@ for dir in "${TARGETS[@]}"; do
       blocked=true
     fi
   done
+  # The nearest folder that exists must be a writable folder, or the install of this tool would fail
+  # after the other tool was already written.
+  probe="$dir"
+  while [ ! -e "$probe" ]; do probe="$(dirname "$probe")"; done
+  if [ ! -d "$probe" ] || [ ! -w "$probe" ]; then
+    echo "Refused: cannot write under $probe." >&2
+    blocked=true
+  fi
   if [ -e "$file" ] && [ ! -f "$file" ]; then
     echo "Refused: $file exists and is not a regular file." >&2
     blocked=true
@@ -57,12 +65,18 @@ for i in "${!TARGETS[@]}"; do
   file="$dir/SKILL.md"
   case "${actions[$i]}" in
     install)
-      mkdir -p "$dir"
-      cp "$SOURCE" "$file.tmp.$$" && mv "$file.tmp.$$" "$file"
+      if ! { mkdir -p "$dir" && cp "$SOURCE" "$file.tmp.$$" && mv "$file.tmp.$$" "$file"; }; then
+        rm -f "$file.tmp.$$"
+        echo "FAILED to install $file. Earlier lines show what was already written." >&2
+        exit 1
+      fi
       echo "Installed: $file" ;;
     replace)
-      cp -p "$file" "$file.bak"
-      cp "$SOURCE" "$file.tmp.$$" && mv "$file.tmp.$$" "$file"
+      if ! { cp -p "$file" "$file.bak" && cp "$SOURCE" "$file.tmp.$$" && mv "$file.tmp.$$" "$file"; }; then
+        rm -f "$file.tmp.$$"
+        echo "FAILED to replace $file; it was not changed. Earlier lines show what was already written." >&2
+        exit 1
+      fi
       echo "Replaced:  $file (old copy: $file.bak)" ;;
     same)
       echo "Up to date: $file" ;;
