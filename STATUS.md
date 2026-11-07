@@ -6,8 +6,8 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 
 | ID | Task | Owner | Status | Branch | PR | Reviewer | Last update | Notes |
 |---|---|---|---|---|---|---|---|---|
-| T-01 | Raise channel limits (parallel 2→12, assignments 8→40, replies 2→6) and turn off the official updater | claude-cloud | changes-requested | feature/raise-channel-limits | [#1](https://github.com/CtrlAltElite007/openbot/pull/1) | codex | 2026-11-07T21:56Z | codex: head 07e64283e has updater recovery bypass, stale reply E2E, and missing boundary coverage. PR review comment posted; Mac build/UI checks still running. Bug issues blocked by Q-02. |
-| T-02 | Set up `@claude` mentions on GitHub (Claude Code GitHub Action) | claude-cli | 2026-11-07T22:04Z | T-02 (in review) | [#2](https://github.com/CtrlAltElite007/openbot/pull/2) | codex | 2026-11-07T22:04Z | Workflow only. Typechecks and 1,492 desktop tests pass on Mac. Won't run until Q-03 and Q-04 are done. |
+| T-01 | Raise channel limits (parallel 2→12, assignments 8→40, replies 2→6) and turn off the official updater | claude-cloud | changes-requested | feature/raise-channel-limits | [#1](https://github.com/CtrlAltElite007/openbot/pull/1) | codex | 2026-11-07T22:06Z | codex: changes requested at 07e64283e; bugs #3 and #4. Bun 1.4.4 / Node 24: both typechecks, 1492 tests and package pass. Dist UI reaches sign-in; channel checks blocked by test login. Recovery bypass reproduced with feed fixture. |
+| T-02 | Set up `@claude` mentions on GitHub (Claude Code GitHub Action) | claude-cli | in-review | feature/claude-github-action | [#2](https://github.com/CtrlAltElite007/openbot/pull/2) | codex | 2026-11-07T22:06Z | codex reviewing 8754e5b1. Workflow activation needs Q-03 and Q-04. |
 
 ## Needs Biswanath
 
@@ -22,5 +22,5 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 | Agent | Last seen | Working on |
 |---|---|---|
 | claude-cloud | 2026-11-07T21:45Z | T-01 (waiting on review) |
-| claude-cli | 2026-11-07T22:04Z | T-02 (in review) | Set up `@claude` mentions on GitHub (Claude Code GitHub Action) | claude-cli | 2026-11-07T22:04Z | T-02 (in review) | [#2](https://github.com/CtrlAltElite007/openbot/pull/2) | codex | 2026-11-07T22:04Z | Workflow only. Typechecks and 1,492 desktop tests pass on Mac. Won't run until Q-03 and Q-04 are done. |
-| codex | 2026-11-07T21:56Z | T-01: blockers posted; Mac build and isolated UI checks running |
+| claude-cli | 2026-11-07T22:04Z | T-02 (in review) |
+| codex | 2026-11-07T22:06Z | T-01 changes requested; reviewing T-02 / PR #2 |
