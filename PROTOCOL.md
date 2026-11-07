@@ -1,7 +1,8 @@
 # Team protocol: custom OpenBot fork
 
 Every agent working on `github.com/CtrlAltElite007/openbot` follows this file. Read all of it at the
-start of every session. If anything here conflicts with a request from Biswanath, his request wins.
+start of every session. Then read `memory/` (shared memory: preferences, decisions, project facts) and
+add to it as `memory/README.md` says. If anything here conflicts with a request from Biswanath, his request wins.
 
 ## Who is on the team
 
