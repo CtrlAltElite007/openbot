@@ -3,6 +3,8 @@ import type {
   AgentEvent,
   Channel,
   ChannelCommand,
+  ChannelDraft,
+  ChannelLimits,
   ChannelMemory,
   ChannelMessage,
   ChannelPage,
@@ -26,6 +28,7 @@ import {
   CONTEXT_RESET_ITEM_TYPE,
   channelRoutingConversationEventItemType,
   isContextResetMarker,
+  mergeChannelLimits,
 } from "@openbot/contracts/ipc";
 import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
 import { sourceText } from "@openbot/i18n/source";
@@ -98,7 +101,9 @@ export function createMockChannels(
               ...storedPicture(channels.get(input.channelId)),
               // A draft without `isolated` keeps the stored value, as the service does.
               ...(channels.get(input.channelId)?.isolated ? { isolated: true } : {}),
-              ...input.draft,
+              ...withoutLimits(input.draft),
+              // The draft carries only the limits it changes; merge them, as the service does (T-10).
+              ...limitsAfterSave(channels.get(input.channelId)?.limits, input.draft.limits),
               id: input.channelId,
               revision: channels.get(input.channelId)?.revision ?? 0,
               archived: channels.get(input.channelId)?.archived ?? false,
@@ -430,4 +435,18 @@ function nextTrigger(routineId: string, schedule: RoutineSchedule, now: string):
     createdAt: now,
     updatedAt: now,
   };
+}
+
+/** The `limits` key of a saved mock channel: absent keeps it, as `mergeChannelLimits` in the service. */
+function limitsAfterSave(
+  stored: ChannelLimits | null | undefined,
+  patch: Partial<ChannelLimits> | null | undefined,
+): { limits?: ChannelLimits | null } {
+  const limits = mergeChannelLimits(stored, patch);
+  return limits === undefined ? {} : { limits };
+}
+
+function withoutLimits(draft: ChannelDraft): Omit<ChannelDraft, "limits"> {
+  const { limits: _patch, ...rest } = draft;
+  return rest;
 }

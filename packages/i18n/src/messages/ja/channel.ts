@@ -91,4 +91,8 @@ export const messages = {
   "channel.error.update": "チャンネルを更新できませんでした。",
   "channel.error.loadOlder": "以前のメッセージを読み込めませんでした。",
   "channel.error.delete": "このチャンネルを削除できませんでした。",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "同時に作業するエージェント",
+  "channel.settings.assignmentLimit": "リクエストごとの自動引き継ぎ",
+  "channel.settings.limitDefault": "{count}（既定）",
 } as const satisfies PartialTranslation<typeof source>;

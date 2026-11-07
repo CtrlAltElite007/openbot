@@ -99,4 +99,8 @@ export const messages = {
   "channel.error.update": "No se pudo actualizar el canal.",
   "channel.error.loadOlder": "No se pudieron cargar los mensajes anteriores.",
   "channel.error.delete": "No se pudo eliminar este canal.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "Agentes trabajando a la vez",
+  "channel.settings.assignmentLimit": "Traspasos automáticos por solicitud",
+  "channel.settings.limitDefault": "{count} (predeterminado)",
 } as const satisfies PartialTranslation<typeof source>;

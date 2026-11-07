@@ -104,4 +104,8 @@ export const messages = {
   "channel.error.update": "تعذّر تحديث القناة.",
   "channel.error.loadOlder": "تعذّر تحميل الرسائل السابقة.",
   "channel.error.delete": "تعذّر حذف هذه القناة.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "الوكلاء الذين يعملون معًا",
+  "channel.settings.assignmentLimit": "عمليات التسليم التلقائي لكل طلب",
+  "channel.settings.limitDefault": "{count} (افتراضي)",
 } as const satisfies PartialTranslation<typeof source>;
