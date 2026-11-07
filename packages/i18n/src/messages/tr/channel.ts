@@ -92,4 +92,8 @@ export const messages = {
   "channel.error.update": "Kanal güncellenemedi.",
   "channel.error.loadOlder": "Önceki mesajlar yüklenemedi.",
   "channel.error.delete": "Bu kanal silinemedi.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "Aynı anda çalışan ajanlar",
+  "channel.settings.assignmentLimit": "İstek başına otomatik devir",
+  "channel.settings.limitDefault": "{count} (varsayılan)",
 } as const satisfies PartialTranslation<typeof source>;

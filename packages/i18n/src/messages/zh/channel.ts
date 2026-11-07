@@ -90,4 +90,8 @@ export const messages = {
   "channel.error.update": "无法更新该频道。",
   "channel.error.loadOlder": "无法加载更早的消息。",
   "channel.error.delete": "无法删除该频道。",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "同时工作的智能体",
+  "channel.settings.assignmentLimit": "每个请求的自动交接次数",
+  "channel.settings.limitDefault": "{count}（默认）",
 } as const satisfies PartialTranslation<typeof source>;

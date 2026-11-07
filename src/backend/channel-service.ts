@@ -8,12 +8,11 @@ import {
   type AgentEvent,
   type AgentSummary,
   type AvatarImageInput,
-  CHANNEL_ASSIGNMENT_LIMIT,
   CHANNEL_CHANGE_ITEM_TYPE,
-  CHANNEL_PARALLEL_LIMIT,
   type Channel,
   type ChannelCommand,
   type ChannelDraft,
+  type ChannelLimits,
   type ChannelMemory,
   type ChannelMessage,
   type ChannelRoutingConversationEventAction,
@@ -21,6 +20,7 @@ import {
   CONTEXT_RESET_ITEM_TYPE,
   type ConversationSnapshot,
   type CreateChannelMemoryInput,
+  channelLimits,
   channelRoutingConversationEventItemType,
   type DeleteChannelMemoryInput,
   type DeleteChannelMessageInput,
@@ -1130,12 +1130,18 @@ export class ChannelService {
     // alone does not show that the task is free: the assignment of the previous owner does.
     return (
       assignments.some((assignment) => assignment.agentId === task.ownerAgentId || assignment.taskId === task.id) ||
-      assignments.filter((assignment) => assignment.channelId === task.channelId).length >= CHANNEL_PARALLEL_LIMIT ||
+      assignments.filter((assignment) => assignment.channelId === task.channelId).length >=
+        this.#limitsOf(task.channelId).parallel ||
       task.dependencies.some((id) => {
         const dependency = tasks.get(id);
         return !dependency || !settled(dependency);
       })
     );
+  }
+
+  /** The limits of a channel (custom/main fork, T-10): its own, or the defaults when it has none or is gone. */
+  #limitsOf(channelId: string): ChannelLimits {
+    return channelLimits(this.store.exists(channelId) ? this.store.get(channelId) : {});
   }
 
   /** Gives a task that resources hold back its place in the queue, once. */
@@ -3331,7 +3337,7 @@ export class ChannelService {
       return refuse("A source message is unavailable. Use the ids of shared channel messages.");
     const root = tasks.find((item) => item.id === task.rootTaskId);
     if (!root) return yield* channelFailure(new Error("The root task is unavailable."));
-    if (root.assignmentCount >= CHANNEL_ASSIGNMENT_LIMIT) {
+    if (root.assignmentCount >= channelLimits(channel).assignmentsPerRequest) {
       yield* channelSync(() =>
         this.store.update(
           channel,

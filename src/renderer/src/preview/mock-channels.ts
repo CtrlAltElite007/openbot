@@ -98,6 +98,8 @@ export function createMockChannels(
               ...storedPicture(channels.get(input.channelId)),
               // A draft without `isolated` keeps the stored value, as the service does.
               ...(channels.get(input.channelId)?.isolated ? { isolated: true } : {}),
+              // A draft without `limits` keeps the stored limits, as the service does (custom/main, T-10).
+              ...(channels.get(input.channelId)?.limits ? { limits: channels.get(input.channelId)?.limits } : {}),
               ...input.draft,
               id: input.channelId,
               revision: channels.get(input.channelId)?.revision ?? 0,

@@ -93,4 +93,8 @@ export const messages = {
   "channel.error.update": "Kan het kanaal niet bijwerken.",
   "channel.error.loadOlder": "Kan eerdere berichten niet laden.",
   "channel.error.delete": "Kan dit kanaal niet verwijderen.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "Agents die tegelijk werken",
+  "channel.settings.assignmentLimit": "Automatische overdrachten per verzoek",
+  "channel.settings.limitDefault": "{count} (standaard)",
 } as const satisfies PartialTranslation<typeof source>;

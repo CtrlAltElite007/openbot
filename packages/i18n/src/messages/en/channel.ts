@@ -91,4 +91,8 @@ export const messages = defineMessages("channel", {
   "channel.error.update": "The channel could not be updated.",
   "channel.error.loadOlder": "Could not load earlier messages.",
   "channel.error.delete": "Could not delete this channel.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "Agents working at once",
+  "channel.settings.assignmentLimit": "Automatic handoffs per request",
+  "channel.settings.limitDefault": "{count} (default)",
 });

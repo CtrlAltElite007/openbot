@@ -91,4 +91,8 @@ export const messages = {
   "channel.error.update": "채널을 업데이트할 수 없어요.",
   "channel.error.loadOlder": "이전 메시지를 불러올 수 없어요.",
   "channel.error.delete": "이 채널을 삭제할 수 없어요.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "동시에 작업하는 에이전트",
+  "channel.settings.assignmentLimit": "요청당 자동 인계",
+  "channel.settings.limitDefault": "{count}(기본값)",
 } as const satisfies PartialTranslation<typeof source>;

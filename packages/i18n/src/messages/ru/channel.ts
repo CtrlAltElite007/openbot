@@ -101,4 +101,8 @@ export const messages = {
   "channel.error.update": "Не удалось обновить канал.",
   "channel.error.loadOlder": "Не удалось загрузить прежние сообщения.",
   "channel.error.delete": "Не удалось удалить этот канал.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "Агенты, работающие одновременно",
+  "channel.settings.assignmentLimit": "Автоматические передачи на запрос",
+  "channel.settings.limitDefault": "{count} (по умолчанию)",
 } as const satisfies PartialTranslation<typeof source>;

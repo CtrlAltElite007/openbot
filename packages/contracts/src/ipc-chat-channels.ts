@@ -21,6 +21,27 @@ export const SIGNED_OUT_CHANNEL_MEMBER_ID = "local";
 // custom/no-limits: raised from 2 active and 8 automatic assignments per request.
 export const CHANNEL_PARALLEL_LIMIT = 12;
 export const CHANNEL_ASSIGNMENT_LIMIT = 40;
+/** custom/main fork (T-10): the highest values that a channel can set in its settings. */
+export const CHANNEL_PARALLEL_LIMIT_MAX = 32;
+export const CHANNEL_ASSIGNMENT_LIMIT_MAX = 200;
+/** The choices that the channel settings offer. Each list contains the default. */
+export const CHANNEL_PARALLEL_LIMIT_CHOICES = [2, 4, 8, 12, 16, 24, 32] as const;
+export const CHANNEL_ASSIGNMENT_LIMIT_CHOICES = [8, 20, 40, 80, 120, 200] as const;
+
+/**
+ * The limits of one channel (custom/main fork, T-10). `parallel` is the number of assignments that
+ * run at once in the channel; `assignmentsPerRequest` is the number of automatic assignments before
+ * a request pauses. Only this computer keeps them: the Team API channel codecs do not carry them.
+ */
+export interface ChannelLimits {
+  parallel: number;
+  assignmentsPerRequest: number;
+}
+
+/** The limits that apply to a channel: its own, or the defaults. */
+export function channelLimits(channel: { limits?: ChannelLimits | null }): ChannelLimits {
+  return channel.limits ?? { parallel: CHANNEL_PARALLEL_LIMIT, assignmentsPerRequest: CHANNEL_ASSIGNMENT_LIMIT };
+}
 
 export interface ChannelMember {
   agentId: string;
@@ -82,6 +103,11 @@ export interface ChannelDraft {
    * channel codecs do not carry it, so a joined server and a phone show the member faces.
    */
   icon?: ChannelIcon | null;
+  /**
+   * custom/main fork (T-10). Absent keeps the stored limits, and null returns to the defaults. Only
+   * this computer keeps them, as for `icon`.
+   */
+  limits?: ChannelLimits | null;
 }
 
 export interface Channel extends ChannelDraft {
@@ -249,10 +275,32 @@ export function normalizeChannelDraft(value: unknown): DynamicRecord | undefined
  * with such an icon is still refused.
  */
 function normalizeSavedChannel(value: unknown): DynamicRecord | undefined {
-  const channel = normalizeChannelDraft(value);
+  const channel = dropUnreadableLimits(normalizeChannelDraft(value));
   if (!channel || channel.icon === undefined || channel.icon === null || isChannelIcon(channel.icon)) return channel;
   const { icon: _unreadable, ...rest } = channel;
   return rest;
+}
+
+/** Limits that this version cannot read are left out, so the channel uses the defaults and stays readable. */
+function dropUnreadableLimits(channel: DynamicRecord | undefined): DynamicRecord | undefined {
+  if (!channel || channel.limits === undefined || channel.limits === null || isChannelLimits(channel.limits))
+    return channel;
+  const { limits: _unreadable, ...rest } = channel;
+  return rest;
+}
+
+function isChannelLimits(value: unknown): value is ChannelLimits {
+  return (
+    isDynamicRecord(value) &&
+    typeof value.parallel === "number" &&
+    Number.isInteger(value.parallel) &&
+    value.parallel >= 1 &&
+    value.parallel <= CHANNEL_PARALLEL_LIMIT_MAX &&
+    typeof value.assignmentsPerRequest === "number" &&
+    Number.isInteger(value.assignmentsPerRequest) &&
+    value.assignmentsPerRequest >= 1 &&
+    value.assignmentsPerRequest <= CHANNEL_ASSIGNMENT_LIMIT_MAX
+  );
 }
 
 export function isChannelDraft(value: unknown): value is ChannelDraft {
@@ -269,7 +317,8 @@ export function isChannelDraft(value: unknown): value is ChannelDraft {
     new Set(value.members.map((member) => member.agentId)).size === value.members.length &&
     (value.leadAgentId === null ||
       (isIdentifier(value.leadAgentId) && value.members.some((member) => member.agentId === value.leadAgentId))) &&
-    (value.icon === undefined || value.icon === null || isChannelIcon(value.icon))
+    (value.icon === undefined || value.icon === null || isChannelIcon(value.icon)) &&
+    (value.limits === undefined || value.limits === null || isChannelLimits(value.limits))
   );
 }
 
@@ -289,7 +338,7 @@ function isChannelIcon(value: unknown): value is ChannelIcon {
 
 /** Only the fields of a draft, so a save cannot carry a host-owned field such as `imageUrl`. */
 function draftFields(draft: ChannelDraft): ChannelDraft {
-  const { name, title, instructions, members, leadAgentId, isolated, icon } = draft;
+  const { name, title, instructions, members, leadAgentId, isolated, icon, limits } = draft;
   return {
     name,
     title,
@@ -298,6 +347,7 @@ function draftFields(draft: ChannelDraft): ChannelDraft {
     leadAgentId,
     ...(isolated === undefined ? {} : { isolated }),
     ...(icon === undefined ? {} : { icon }),
+    ...(limits === undefined ? {} : { limits }),
   };
 }
 

@@ -95,4 +95,8 @@ export const messages = {
   "channel.error.update": "לא ניתן לעדכן את הערוץ.",
   "channel.error.loadOlder": "לא ניתן לטעון הודעות קודמות.",
   "channel.error.delete": "לא ניתן למחוק את הערוץ.",
+  // custom/main fork (T-10): channel limit settings.
+  "channel.settings.parallelLimit": "סוכנים שעובדים במקביל",
+  "channel.settings.assignmentLimit": "העברות אוטומטיות לכל בקשה",
+  "channel.settings.limitDefault": "{count} (ברירת מחדל)",
 } as const satisfies PartialTranslation<typeof source>;

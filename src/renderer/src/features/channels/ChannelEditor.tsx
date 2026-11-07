@@ -1,5 +1,14 @@
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { Channel, ChannelDraft, ChannelIcon } from "@openbot/contracts/ipc";
+import {
+  CHANNEL_ASSIGNMENT_LIMIT,
+  CHANNEL_ASSIGNMENT_LIMIT_CHOICES,
+  CHANNEL_PARALLEL_LIMIT,
+  CHANNEL_PARALLEL_LIMIT_CHOICES,
+  type Channel,
+  type ChannelDraft,
+  type ChannelIcon,
+  channelLimits,
+} from "@openbot/contracts/ipc";
 import {
   Button,
   buttonVariants,
@@ -11,6 +20,11 @@ import {
   Plus,
   Popover,
   Search,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   SwitchField,
   Tooltip,
 } from "@openbot/ui";
@@ -386,6 +400,38 @@ export function ChannelEditor(props: ChannelEditorProps) {
           description={t("channel.settings.isolatedDescription")}
         />
       </Show>
+      <Show when={pictureChannel()}>
+        {(current) => (
+          <>
+            <SettingsField label={t("channel.settings.parallelLimit")}>
+              <LimitSelect
+                value={channelLimits(current()).parallel}
+                choices={CHANNEL_PARALLEL_LIMIT_CHOICES}
+                defaultValue={CHANNEL_PARALLEL_LIMIT}
+                label={t("channel.settings.parallelLimit")}
+                onChange={(parallel) =>
+                  void commit((draft) => {
+                    draft.limits = { ...channelLimits(current()), parallel };
+                  })
+                }
+              />
+            </SettingsField>
+            <SettingsField label={t("channel.settings.assignmentLimit")}>
+              <LimitSelect
+                value={channelLimits(current()).assignmentsPerRequest}
+                choices={CHANNEL_ASSIGNMENT_LIMIT_CHOICES}
+                defaultValue={CHANNEL_ASSIGNMENT_LIMIT}
+                label={t("channel.settings.assignmentLimit")}
+                onChange={(assignmentsPerRequest) =>
+                  void commit((draft) => {
+                    draft.limits = { ...channelLimits(current()), assignmentsPerRequest };
+                  })
+                }
+              />
+            </SettingsField>
+          </>
+        )}
+      </Show>
       <SettingsLinkGroup>
         <SettingsLinkRow
           label={t("channel.settings.memories")}
@@ -556,5 +602,43 @@ export function ChannelEditor(props: ChannelEditorProps) {
         </Show>
       </section>
     </div>
+  );
+}
+
+/**
+ * custom/main fork (T-10): a select of the fixed limit choices of a channel. A stored value that is
+ * not a choice (a later version, or an agent) is shown too, so the select never hides it.
+ */
+function LimitSelect(props: {
+  value: number;
+  choices: readonly number[];
+  defaultValue: number;
+  label: string;
+  onChange: (value: number) => void;
+}) {
+  const { t } = useText();
+  const options = () =>
+    (props.choices.includes(props.value)
+      ? [...props.choices]
+      : [...props.choices, props.value].sort((a, b) => a - b)
+    ).map(String);
+  const text = (option: string) =>
+    Number(option) === props.defaultValue ? t("channel.settings.limitDefault", { count: Number(option) }) : option;
+  return (
+    <Select<string>
+      class="settings-modal-select"
+      options={options()}
+      value={String(props.value)}
+      onChange={(option) => {
+        if (option && Number(option) !== props.value) props.onChange(Number(option));
+      }}
+      placement="bottom-end"
+      itemComponent={(itemProps) => <SelectItem item={itemProps.item}>{text(itemProps.item.rawValue)}</SelectItem>}
+    >
+      <SelectTrigger size="sm" aria-label={props.label}>
+        <SelectValue<string>>{(state) => text(state.selectedOption())}</SelectValue>
+      </SelectTrigger>
+      <SelectContent />
+    </Select>
   );
 }
