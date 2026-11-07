@@ -1,12 +1,76 @@
 #!/usr/bin/env bash
 # Installs the openbot-team skill for Claude Code and Codex on this Mac.
-# Run: bash ~/openbot-team/tools/install-team-skill.sh
+#   bash ~/openbot-team/tools/install-team-skill.sh            # install; keep files that differ
+#   bash ~/openbot-team/tools/install-team-skill.sh --replace  # also replace files that differ
+#
+# It checks both destinations before it writes anything:
+# - a symlink anywhere on the destination path is refused (nothing is written);
+# - an identical file is left as it is;
+# - a different file is kept, unless you pass --replace (the old file is then saved as SKILL.md.bak).
 set -euo pipefail
+
 HERE="$(cd "$(dirname "$0")" && pwd)"
-for dir in "$HOME/.claude/skills/openbot-team" "$HOME/.codex/skills/openbot-team"; do
-  mkdir -p "$dir"
-  cp "$HERE/openbot-team/SKILL.md" "$dir/SKILL.md"
+SOURCE="$HERE/openbot-team/SKILL.md"
+REPLACE=false
+for argument in "$@"; do
+  case "$argument" in
+    --replace) REPLACE=true ;;
+    *) echo "Unknown option: $argument" >&2; exit 2 ;;
+  esac
 done
-echo "Installed. Start a new session, then:"
+[ -f "$SOURCE" ] && [ ! -L "$SOURCE" ] || { echo "Missing source: $SOURCE" >&2; exit 2; }
+
+TARGETS=("$HOME/.claude/skills/openbot-team" "$HOME/.codex/skills/openbot-team")
+
+# 1. Preflight: decide an action for each destination, write nothing yet.
+actions=()
+blocked=false
+for dir in "${TARGETS[@]}"; do
+  file="$dir/SKILL.md"
+  for path in "$(dirname "$(dirname "$dir")")" "$(dirname "$dir")" "$dir" "$file" "$file.bak" "$file.tmp.$$"; do
+    if [ -L "$path" ]; then
+      echo "Refused: $path is a symlink." >&2
+      blocked=true
+    fi
+  done
+  if [ -e "$file" ] && [ ! -f "$file" ]; then
+    echo "Refused: $file exists and is not a regular file." >&2
+    blocked=true
+  elif [ ! -e "$file" ]; then
+    actions+=("install")
+  elif cmp -s "$SOURCE" "$file"; then
+    actions+=("same")
+  elif $REPLACE; then
+    actions+=("replace")
+  else
+    actions+=("keep")
+  fi
+done
+if $blocked; then
+  echo "Nothing was written." >&2
+  exit 1
+fi
+
+# 2. Write, only after every destination passed.
+for i in "${!TARGETS[@]}"; do
+  dir="${TARGETS[$i]}"
+  file="$dir/SKILL.md"
+  case "${actions[$i]}" in
+    install)
+      mkdir -p "$dir"
+      cp "$SOURCE" "$file.tmp.$$" && mv "$file.tmp.$$" "$file"
+      echo "Installed: $file" ;;
+    replace)
+      cp -p "$file" "$file.bak"
+      cp "$SOURCE" "$file.tmp.$$" && mv "$file.tmp.$$" "$file"
+      echo "Replaced:  $file (old copy: $file.bak)" ;;
+    same)
+      echo "Up to date: $file" ;;
+    keep)
+      echo "Kept:      $file differs from the team copy. Run with --replace to replace it." ;;
+  esac
+done
+
+echo "Start a new session, then:"
 echo "  Claude Code:  /openbot-team   (or say \"check the team board\")"
 echo "  Codex:        \$openbot-team   (or say \"check the team board\")"

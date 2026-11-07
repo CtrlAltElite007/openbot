@@ -15,7 +15,7 @@ start of every session. Then read `memory/` (shared memory: preferences, decisio
 | `biswanath` | The human | Anywhere | Decides anything in "Needs Biswanath" |
 
 Sign every commit, log line and comment with your ID. Use the GitHub account `CtrlAltElite007`
-for this repo (`gh auth switch -u CtrlAltElite007`). Never use the work account `biswanath-cmd` here.
+for this repo (`gh auth switch -u CtrlAltElite007`). Never use any other GitHub account here.
 
 ## Where things live
 

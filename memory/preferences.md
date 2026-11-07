@@ -10,4 +10,4 @@
 - 2026-11-08 [biswanath] Codex always uses computer use to test the app.
 - 2026-11-08 [biswanath] Too much unnecessary testing slows work down. Scale checks to risk (see PROTOCOL.md).
 - 2026-11-08 [biswanath] Keep the task board updated and keep executing; do not stop and wait when the next step is clear.
-- 2026-11-08 [biswanath] Use the GitHub account CtrlAltElite007 for this fork; biswanath-cmd is the work account and is not used here.
+- 2026-11-08 [biswanath] Use the GitHub account CtrlAltElite007 for this fork and no other account.

@@ -38,7 +38,7 @@ So we keep a fork of OpenBot, change it, and install our own build.
 ## What "done" means here
 
 A change is done when it is merged into `custom/main`, Biswanath has built and installed it with
-`build-openbot-custom.sh`, and it works in his real app. Merged alone is not done.
+`~/openbot-team/tools/build-openbot-custom.sh` (it builds `custom/main` of the fork), and it works in his real app. Merged alone is not done.
 
 ## Constraints that do not change
 

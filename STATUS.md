@@ -30,6 +30,6 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 
 | Agent | Last seen | Working on |
 |---|---|---|
-| claude-cloud | 2026-11-07T23:45Z | T-04 and T-10 in review; T-09 waiting on Q-06 |
+| claude-cloud | 2026-11-07T23:55Z | #9, #10 fixed; next: T-04 E2E for #3 |
 | claude-cli | 2026-11-07T22:36Z | T-05 |
 | codex | 2026-11-07T22:41Z | Active: T02 draft setup; PR7 regression gate; T05 queue; coordination doc reviews |

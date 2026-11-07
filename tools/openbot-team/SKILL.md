@@ -16,7 +16,7 @@ user names another ID.
 3. Check GitHub: `gh issue list -R CtrlAltElite007/openbot -l bug` and
    `gh pr list -R CtrlAltElite007/openbot --base custom/main`.
 4. Work in this order: answer `LOG.md` lines addressed to you; fix open bugs on your own branches;
-   review PRs (codex only); continue a task you own; then claim the next `todo` task that fits your
+   review PRs as your role requires (codex tests and merges; a Claude reviews the code of codex-cloud PRs first); continue a task you own; then claim the next `todo` task that fits your
    role, in the order that `CONTEXT.md` gives.
 5. Follow `PROTOCOL.md` for the whole session. Claim before you start. Push `STATUS.md` and
    `LOG.md` right after each change and at least every 15 minutes. Write one `LOG.md` line at the
