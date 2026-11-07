@@ -11,6 +11,7 @@ import { Effect } from "effect";
 import { app, type BrowserWindow, dialog, shell } from "electron";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { DOWNLOAD_URL } from "./app-archive-watch";
+import { CUSTOM_BUILD } from "./custom-build";
 import { readUpdatePreference, UPDATE_PREFERENCE_FILE } from "./update-preference-store";
 import {
   electronUpdaterCacheDirectory,
@@ -41,6 +42,13 @@ interface NewerDatabaseRecoveryOptions {
  * update is not possible or fails. The install quits the app, so this returns only after a failure.
  */
 export async function recoverFromNewerDatabase(options: NewerDatabaseRecoveryOptions): Promise<void> {
+  if (CUSTOM_BUILD) {
+    // The custom build never installs an official release over itself, and never offers one.
+    logger.info("An older custom OpenBot started over newer data. No update is attempted.");
+    await showCustomBuildRebuildRequired(options.translate);
+    app.quit();
+    return;
+  }
   const updater = await createRecoveryUpdater(options.beforeInstall);
   if (updater) {
     const progress = new AbortController();
@@ -64,6 +72,7 @@ async function createRecoveryUpdater(
 ): Promise<UpdateService | null> {
   const currentVersion = app.getVersion();
   if (
+    CUSTOM_BUILD ||
     !app.isPackaged ||
     isNixStoreInstall() ||
     !supportsInstalledUpdates(process.platform) ||
@@ -189,4 +198,15 @@ async function showUpdateRequired(translate: AppTranslate): Promise<void> {
   });
   if (response === 0) await shell.openExternal(DOWNLOAD_URL);
   if (response === 1) await shell.openExternal(GUIDE_URL);
+}
+
+async function showCustomBuildRebuildRequired(translate: AppTranslate): Promise<void> {
+  await dialog.showMessageBox({
+    type: "warning",
+    message: translate("startup.customNewerDataTitle"),
+    detail: translate("startup.customNewerDataBody", { version: app.getVersion() }),
+    buttons: [translate("startup.newerDataQuit")],
+    defaultId: 0,
+    cancelId: 0,
+  });
 }

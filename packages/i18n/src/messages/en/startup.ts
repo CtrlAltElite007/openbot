@@ -20,4 +20,8 @@ export const messages = defineMessages("startup", {
   "startup.newerDataDownload": "Download OpenBot",
   "startup.newerDataGuide": "Open guide",
   "startup.newerDataQuit": "Quit",
+  // custom/main fork: a self-built copy started over newer data. It never offers the official release.
+  "startup.customNewerDataTitle": "This custom OpenBot is older than your data",
+  "startup.customNewerDataBody":
+    "A newer version of OpenBot saved your data, and this custom version ({version}) cannot open it. Rebuild the custom app from the latest custom/main, or restore a backup of your data if you have one.\n\nThe official OpenBot does not have the custom changes. Your local data was not reset or overwritten.",
 });

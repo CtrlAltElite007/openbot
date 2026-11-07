@@ -16,6 +16,7 @@ import { Cause, Deferred, Effect, Result, Schema, Scope, Semaphore } from "effec
 import type { ProgressInfo, UpdateInfo } from "electron-updater";
 import type { HostUpdateState } from "../../packages/contracts/src/host-manager";
 import { causeHelpers } from "../backend/effect-boundary";
+import { CUSTOM_BUILD } from "./custom-build";
 import type { OpenBotSiblingInstance, SiblingScanFailed } from "./update-sibling-instances";
 
 const logger = createOpenBotLogger("update");
@@ -76,8 +77,15 @@ export function createDisabledUpdateAdapter(): UpdateAdapter {
   };
 }
 
-/** electron-updater's updater, or `null` when the module does not load. */
+/**
+ * electron-updater's updater, or `null` when the module does not load. Always `null` in the custom
+ * build, so no caller can reach the official release feed, whichever path asks.
+ */
 export async function loadElectronUpdater(): Promise<UpdateAdapter | null> {
+  if (CUSTOM_BUILD) {
+    logger.info("OpenBot updates are off: this is a custom build");
+    return null;
+  }
   try {
     const updaterModule = await import("electron-updater");
     const adapter = updaterModule.autoUpdater ?? updaterModule.default?.autoUpdater ?? updaterModule.default;

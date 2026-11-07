@@ -18,4 +18,7 @@ export const messages = {
   "startup.newerDataDownload": "تنزيل OpenBot",
   "startup.newerDataGuide": "فتح الدليل",
   "startup.newerDataQuit": "إنهاء",
+  "startup.customNewerDataTitle": "نسخة OpenBot المخصصة هذه أقدم من بياناتك",
+  "startup.customNewerDataBody":
+    "حفظ إصدار أحدث من OpenBot بياناتك، ولا يستطيع هذا الإصدار المخصص ({version}) فتحها. أعد بناء التطبيق المخصص من أحدث custom/main، أو استعد نسخة احتياطية من بياناتك إذا كانت لديك واحدة.\n\nلا يحتوي OpenBot الرسمي على التغييرات المخصصة. لم تتم إعادة تعيين بياناتك المحلية أو الكتابة فوقها.",
 } as const satisfies PartialTranslation<typeof source>;

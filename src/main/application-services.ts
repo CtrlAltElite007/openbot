@@ -35,6 +35,7 @@ import {
   browserProxyConnection,
   createBrowserProfileService,
 } from "./browser-profile-service";
+import { CUSTOM_BUILD } from "./custom-build";
 import { HostReleaseService, readInstallationMode } from "./host-release-service";
 import {
   CONTAINER_UPDATE_PATHS,
@@ -984,9 +985,6 @@ async function createMessagingServices({
   }
   return { messaging, signalIngress };
 }
-
-/** custom/no-limits: turns off the official updater for this self-built copy. */
-const CUSTOM_BUILD = true;
 
 export async function createApplicationServices({
   mainWindow,

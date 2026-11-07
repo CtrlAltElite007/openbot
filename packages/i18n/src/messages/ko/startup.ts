@@ -18,4 +18,7 @@ export const messages = {
   "startup.newerDataDownload": "OpenBot 다운로드",
   "startup.newerDataGuide": "가이드 열기",
   "startup.newerDataQuit": "종료",
+  "startup.customNewerDataTitle": "이 사용자 지정 OpenBot은 데이터보다 오래된 버전입니다",
+  "startup.customNewerDataBody":
+    "최신 버전의 OpenBot이 데이터를 저장했기 때문에 이 사용자 지정 버전({version})으로는 열 수 없습니다. 최신 custom/main에서 사용자 지정 앱을 다시 빌드하거나, 데이터 백업이 있으면 복원하세요.\n\n공식 OpenBot에는 사용자 지정 변경 사항이 없습니다. 로컬 데이터는 초기화되거나 덮어써지지 않았습니다.",
 } as const satisfies PartialTranslation<typeof source>;

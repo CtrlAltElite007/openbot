@@ -215,6 +215,7 @@
     "test:browser:whatsapp-live": "bun scripts/browser-smoke.ts --whatsapp-live",
     "test:browser:canva-live": "bun scripts/browser-smoke.ts --canva-live",
     "test:browser:framer-live": "bun scripts/browser-smoke.ts --framer-live",
+    "test:custom-build-newer-data": "bun scripts/custom-build-newer-data-e2e.ts",
     "test:codex": "bun scripts/codex-doctor.ts --strict",
     "test:acp-directories": "bun scripts/acp-additional-directories-e2e.ts",
     "test:acp-flavors": "bun scripts/acp-flavor-e2e.ts",
