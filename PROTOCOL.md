@@ -10,6 +10,7 @@ start of every session. If anything here conflicts with a request from Biswanath
 | `claude-cloud` | Claude in claude.ai (cloud session) | Anthropic cloud, no access to this Mac's apps | Developer |
 | `claude-cli` | Claude Code CLI | Biswanath's Mac | Developer |
 | `codex` | Codex CLI / app | Biswanath's Mac, with computer use | Reviewer, tester, merger |
+| `codex-cloud` | Codex cloud, started by `@codex` on GitHub (Biswanath's ChatGPT Plus) | OpenAI cloud, no access to this Mac or to `team/coordination` | Bug fixer on request |
 | `biswanath` | The human | Anywhere | Decides anything in "Needs Biswanath" |
 
 Sign every commit, log line and comment with your ID. Use the GitHub account `CtrlAltElite007`
@@ -74,10 +75,13 @@ One task per feature branch, one feature branch per PR. Do not mix unrelated cha
   whichever Claude is free. Address `@biswanath` only for things that need him.
 - Every agent reads the `LOG.md` lines added since its last session before doing anything else,
   and answers lines addressed to it.
-- On GitHub, start an issue or PR comment with `@claude` to ask Claude to act. This only starts a
-  Claude run automatically if the Claude Code GitHub Action is installed on the fork. Without it,
-  Claude agents still pick up open `bug` issues when they check in (see below). Always add the same
-  request to `LOG.md` too.
+- **On GitHub, `@codex` starts Codex cloud** (`codex-cloud`), not the local `codex`. A PR comment of
+  exactly `@codex review` asks for a review. Any other `@codex <ask>` on a PR or issue starts a
+  cloud fix task. Start every other GitHub comment with the agent ID instead (`codex:`,
+  `claude-cli:`) so you don't start a cloud run by accident. In `LOG.md`, `@codex` still means the
+  local `codex`.
+- There is no `@claude` trigger on GitHub (no Anthropic API key). Claude agents pick up open `bug`
+  issues when they check in. Always add a GitHub request to `LOG.md` too.
 
 ## Roles
 
@@ -89,6 +93,16 @@ One task per feature branch, one feature branch per PR. Do not mix unrelated cha
   `bun run typecheck:contracts`, `bun run test:desktop`. Paste the results in the PR.
 - `claude-cloud` cannot run the Mac app or computer use; leave UI testing to `codex`.
 - Never merge your own PR. Never push to `custom/main` directly.
+
+### Bug fixer on request (`codex-cloud`)
+- Runs only when someone writes `@codex <ask>` on a GitHub issue or PR. Whoever asks must name the
+  base branch `custom/main` and the branch `feature/<short-name>` in the ask, since Codex cloud
+  cannot read this file. Example: `@codex fix this bug. Branch feature/fix-reply-limit from
+  custom/main, open a PR into custom/main, title "T-xx: ...". Don't push to main or custom/main.`
+- The agent who asked owns the task in `STATUS.md` and logs it, on Codex cloud's behalf.
+- **A Claude reviews the code of every PR Codex cloud opens** (`claude-cli` or `claude-cloud`, set
+  as Reviewer), so Codex never approves Codex's work. After that review passes, `codex` still does
+  the build, computer-use test and merge as usual.
 
 ### Reviewer and tester (`codex`)
 For each PR into `custom/main` marked `in-review`:
@@ -108,7 +122,7 @@ For each PR into `custom/main` marked `in-review`:
      merge is the approval.
    - Problems: do not merge. Comment on the PR with each blocker. For each real bug, open an issue
      with title, steps to reproduce, expected vs actual, logs or screenshots, the PR link and label
-     `bug`. Start the issue body with `@claude` and a one-line ask. Set Status
+     `bug`. Start the issue body with the PR owner's ID and a one-line ask (or `@codex <ask>` to hand the fix to Codex cloud). Set Status
      `changes-requested` and log it addressed to the PR's owner.
 5. When fixes arrive, review the new head commit only.
 
