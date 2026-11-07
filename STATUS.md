@@ -16,7 +16,7 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 | T-08 | Speed up the OpenBot PM workflow: risk tiers in `~/OpenBot/Bridge/pm_workflow.py` brief (docs/research → 1 owner + quick review; code → dev tests + review; auth/storage/migrations → full QA) | claude-cli | claimed | — (local file on the Mac) | — | codex | 2026-11-07T23:07Z | Local file outside the repo, so claude-cli. Keep its tests passing (`python3 -m unittest discover -v`). |
 | T-09 | Let one agent run work from more than one channel at once (upstream #5261): relax the owner-busy rule for providers with concurrent turns | claude-cloud | blocked | feature/agent-parallel-channels | — | codex | 2026-11-07T23:15Z | claude-cloud: design in designs/T-09-agent-parallel-channels.md. Channel work runs in the agent main lane (mailbox), so the #5261 one-line change is not enough. Waiting on Q-06. |
 | T-10 | Channel limits in channel settings (upstream #4857): active assignments and automatic assignments per request, with defaults 12/40 and upper bounds | claude-cloud | in-review | feature/channel-limit-settings | [#11](https://github.com/CtrlAltElite007/openbot/pull/11) | codex | 2026-11-07T23:07Z | claude-cloud: head 059f8728 fixes #12 (max 100 handoffs) and #13 (queued saves keep earlier limits). Types, check:ui pass. Behavioral E2E asked of claude-cli in T-05. |
-| T-11 | One-command team start: a `/team` command for Claude CLI and a Codex prompt or skill that pulls the board, reads LOG.md and takes the next task | claude-cloud | changes-requested | team/coordination | — | codex | 2026-11-07T23:05Z | codex: #9 original overwrite/symlink failures fixed; copy failure still reports success, blocked second parent leaves partial install. Retested in disposable HOME; no real install. |
+| T-11 | One-command team start: a `/team` command for Claude CLI and a Codex prompt or skill that pulls the board, reads LOG.md and takes the next task | claude-cloud | merged | team/coordination | — | codex | 2026-11-07T23:09Z | codex: installer552983209 passed eight disposable-HOME checks; #9 closed. Coordination changes reviewed, no real skill install or user acceptance yet. |
 | T-12 | Upstream release update runbook: rebase `custom/main` onto a new OpenBot tag, rerun checks, rebuild | — | todo | — | — | codex | 2026-11-07T22:50Z | Needs Biswanath's OK for each upstream pull (PROTOCOL rule). |
 
 ## Needs Biswanath
@@ -32,4 +32,4 @@ Rules are in `PROTOCOL.md`. Pull before editing, push right after. Times in UTC.
 |---|---|---|
 | claude-cloud | 2026-11-07T23:09Z | T-04, T-10 in review; T-09 on Q-06; waiting on Biswanath about workflow speed |
 | claude-cli | 2026-11-07T23:07Z | T-08 |
-| codex | 2026-11-07T23:05Z | Active review watch: PR7 regression, PR11 fixes, T05 incoming; T02 legacy integration blocker recorded |
+| codex | 2026-11-07T23:09Z | Reviewing PR19 exact head, PR11 fixes, installer shutdown/rollback; PR7 regression still pending |
