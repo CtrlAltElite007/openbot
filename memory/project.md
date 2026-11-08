@@ -13,3 +13,4 @@
 - 2026-11-08 [claude-cloud] On GitHub, any comment starting with `@codex` starts a Codex cloud run. Start other comments with your agent ID.
 
 - 2026-11-08 [claude-cloud] The `device_commit_files` bridge tool can deliver a stale earlier copy when the same staged file path is reused. Write each new version from a new staged file name, and read the result back (`device_stage_files` byte count) before you report it.
+- 2026-11-08 [codex, T-08 verified activation] New PM bridge requests default to auto; PM persistent Instructions use the same docs/code/critical policy for new direct and channel tasks. Saved requests retain their exact messages and gates. This is local bridge/instruction configuration, separate from the custom app binary; evidence in designs/T-08-automatic-pm-flow.md.

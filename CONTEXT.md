@@ -24,8 +24,8 @@ the place where much of this work runs. Two problems stopped it:
 2. **Too slow.** The bridge used the same implementation, review and QA flow for every task.
    T-08 now requires automatic flow selection for bridge requests and direct PM chats: docs get
    one owner plus quick independent review; ordinary code gets developer checks plus independent
-   review; critical changes keep separate QA. Explicit user/repository gates remain. This is a
-   requested change, not yet verified active. See `designs/T-08-automatic-pm-flow.md`.
+   review; critical changes keep separate QA. Explicit user/repository gates remain. Automatic selection is
+   now active for new tasks; ten direct PM scenarios passed on 2026-11-08. See `designs/T-08-automatic-pm-flow.md`.
 
 So we keep a fork of OpenBot, change it, and install our own build.
 
@@ -34,8 +34,10 @@ So we keep a fork of OpenBot, change it, and install our own build.
 - Custom/main 64170898 is installed and startup-verified with existing data (2026-11-08). Limits
   are 12 active assignments/channel, 40 automatic assignments/request and 6 replies/request.
   The normal updater is disabled; the newer-database recovery bypass remains open in PR #7.
-- T-08 is the current user priority: finish automatic PM flow selection, include direct chats,
-  test it, update the docs and make it ready to use. Existing explicit tiers alone do not meet it.
+- T-08 automatic flow is reviewed and activated in the local bridge and PM Instructions. New
+  bridge requests default to auto; direct chats use the same policy. Installed tests52, native
+  integration16 and live direct scenarios10 passed. User acceptance remains separate; no measured
+  wall-time speedup is claimed. See the design/evidence record for scope and rollback.
 - The team protocol, board, log and shared memory exist on `team/coordination`.
 - Open work: T-08 automatic PM workflow → T-04 updater recovery → T-05 limit-test failures →
   T-09 parallel channel work for one agent → T-11 one-command team start → T-10 limits in settings →

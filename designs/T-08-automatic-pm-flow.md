@@ -1,6 +1,6 @@
 # T-08: Automatic PM workflow
 
-Owner: codex. User request: 2026-11-08. Status: implementation and verification pending.
+Owner: codex. User request: 2026-11-08. Status: reviewed, activated locally and verified; user acceptance pending.
 
 ## Requested behavior
 
@@ -31,12 +31,27 @@ If new evidence raises the risk, upgrade the existing workflow before affected c
 | App verification | Use computer use on a disposable dist instance for changed app behavior. If only bridge/instructions change, verify that exact configuration and disclose that no app binary change was needed. |
 | Efficiency | Compare actual assignment/role counts for representative small tasks with the previous full flow. Report timings only when measured under comparable conditions. |
 
-## Current evidence and limits
+## Delivered behavior and evidence
 
-The local bridge already has explicit docs/code/critical options. Its 46 tests passed in the prior review, and the files still match that reviewed baseline. The default remains critical. Direct PM chats do not yet have verified automatic flow selection. Status omits the tier despite the README claim. These are remaining work, not delivered behavior.
+Activated 2026-11-08 by codex at the user's request. New bridge requests default to auto. The PM's persistent Instructions contain the same canonical policy, so new direct PM and channel turns use it. Outside the managed policy block, only the old unconditional separate-QA sentence changed. No app binary, schema, model, provider or permission change was needed.
 
-The installed custom OpenBot build is custom/main 64170898, with channel limits 12/40/6. Those scheduler limits are separate from PM workflow selection. Raising them does not change existing task instructions or prove faster completion.
+- Installed bridge tests: 52 passed, 0 failed. Replay, concurrent dispatch, policy failures, safe errors and reported-flow provenance are covered. Legacy and explicit-tier briefs are byte-identical to the previous version.
+- Independent source review: approved; 7 focused behavior checks passed.
+- Independent native integration: 16 passed through real AgentService, SQLite and instruction-file service with a fake provider. Tests cover read/save, stale-save refusal, new-turn policy reload and preserved public history. Disposable processes/profile were cleaned.
+- Real PM direct-chat acceptance: 10 synthetic cases passed in a completed native turn, observed through computer use. Correct docs/code/critical choices, mixed and uncertain scope, explicit QA, in-place escalation, old-task compatibility and status-only behavior were checked. No engineering assignment chain was started by this check.
+- Bridge README and Codex bridge skill now describe auto mode and compatibility. Skill validator passed.
 
-## Delivery record
+The selection is PM instruction-based judgment, not a mechanical review gate. The direct test verifies those ten choices; it does not establish every future decision. No full live delegated workload or before/after wall-time benchmark was run. Do not claim a measured speed percentage.
 
-Record exact changed files/revisions, checks, independent review, activation, rollback path and remaining gaps here before marking this ready. Do not call prompt guidance a mechanical enforcement gate or a synthetic test proof of live model behavior.
+The installed custom OpenBot build remains custom/main 64170898, with channel limits 12/40/6. Scheduler limits are separate from PM workflow selection. Existing tasks retain their original requirements.
+
+## Exact delivered files
+
+| File | SHA-256 |
+|---|---|
+| PM_FLOW_POLICY.md | b5aac708c8cf470c233ce6e60aa899ec0b909edec607d4c40d01c617212883a3 |
+| pm_workflow.py | 7fa0494bfef86d2d683b90fac5a2fdb9705fdff6e66b94cfc30053a91d8facc2 |
+| openbot_bridge.py | 5d7bd186dbb5865e88543b9d3d1170de7141ee61e95a13c92b2cef52988e1cc7 |
+| PM persistent Instructions | b5c9ea408f21482eafd7768e8fcb950266350133f8357c3170aa19fbca6001fb |
+
+Local bridge: `~/OpenBot/Bridge`. Evidence and rollback notes: `~/OpenBot/Bridge/PM_FLOW_ACCEPTANCE.md`. Private originals are backed up under `~/OpenBot/Bridge/.backup-T-08-auto-20261108T102445Z`. This is a reviewed local bridge/instruction deployment, not an app-code PR or a new custom/main merge. Restore saved files/instructions and use a fresh native direct turn for rollback; preserve request state and later edits.
