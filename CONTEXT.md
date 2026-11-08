@@ -21,24 +21,33 @@ the place where much of this work runs. Two problems stopped it:
 1. **Too few agents at once.** Upstream allows 2 active assignments per channel, 8 automatic
    assignments per request, and 2 member replies per request, all hard-coded. One agent also runs
    only one channel turn at a time.
-2. **Too slow.** Part of the reason is too much testing: every task went through separate
-   implementation, review and QA owners with frozen hashes, whatever its risk.
+2. **Too slow.** The bridge used the same implementation, review and QA flow for every task.
+   T-08 now requires automatic flow selection for bridge requests and direct PM chats: docs get
+   one owner plus quick independent review; ordinary code gets developer checks plus independent
+   review; critical changes keep separate QA. Explicit user/repository gates remain. This is a
+   requested change, not yet verified active. See `designs/T-08-automatic-pm-flow.md`.
 
 So we keep a fork of OpenBot, change it, and install our own build.
 
 ## Where we are
 
-- Limits are raised and the official updater is off (T-01, merged). The recovery-path updater bypass
-  and test fixes are in review (T-04, PR #7).
+- Custom/main 64170898 is installed and startup-verified with existing data (2026-11-08). Limits
+  are 12 active assignments/channel, 40 automatic assignments/request and 6 replies/request.
+  The normal updater is disabled; the newer-database recovery bypass remains open in PR #7.
+- T-08 is the current user priority: finish automatic PM flow selection, include direct chats,
+  test it, update the docs and make it ready to use. Existing explicit tiers alone do not meet it.
 - The team protocol, board, log and shared memory exist on `team/coordination`.
-- Open work, in rough order of value: T-04 merge → T-05 limit tests → T-09 parallel channel work for
-  one agent → T-08 faster PM workflow → T-11 one-command team start → T-10 limits in settings →
+- Open work: T-08 automatic PM workflow → T-04 updater recovery → T-05 limit-test failures →
+  T-09 parallel channel work for one agent → T-11 one-command team start → T-10 limits in settings →
   T-12 upstream update runbook. `STATUS.md` is the source of truth; this list only explains why.
 
 ## What "done" means here
 
-A change is done when it is merged into `custom/main`, Biswanath has built and installed it with
-`~/openbot-team/tools/build-openbot-custom.sh` (it builds `custom/main` of the fork), and it works in his real app. Merged alone is not done.
+App changes must be merged into `custom/main`, built, installed and verified in the real app.
+Use `~/openbot-team/tools/build-openbot-custom.sh` for the authorized app installation; it backs up
+the app and data first. Local bridge or PM instruction changes need an exact file/configuration
+record, tests, reversible activation and live verification. Keep these stages separate. Mark a
+task done only after Biswanath accepts it or says it is done, as `PROTOCOL.md` requires.
 
 ## Constraints that do not change
 

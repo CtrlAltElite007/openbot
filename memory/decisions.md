@@ -8,3 +8,5 @@
 - 2026-11-08 [biswanath] PR #1 was merged before its bugs (#3, #4) were fixed, at his explicit instruction.
 - 2026-11-08 [biswanath] No Anthropic API key, so no Claude Code GitHub Action. `@codex` on GitHub (Codex cloud, ChatGPT Plus) handles GitHub-triggered fixes.
 - 2026-11-08 [biswanath] Team coordination lives on the `team/coordination` branch (PROTOCOL.md, STATUS.md, LOG.md, memory/).
+
+- 2026-11-08 [biswanath] Finish automatic PM workflow selection for bridge requests and direct PM chats, test it and make it ready to use; update the docs. Existing task requirements remain; docs/code use lighter flows and critical work keeps full review/QA.
