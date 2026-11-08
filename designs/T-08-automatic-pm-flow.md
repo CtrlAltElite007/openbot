@@ -45,7 +45,7 @@ The selection is PM instruction-based judgment, not a mechanical review gate. Th
 
 The installed custom OpenBot build remains custom/main 64170898, with channel limits 12/40/6. Scheduler limits are separate from PM workflow selection. Existing tasks retain their original requirements.
 
-## Exact delivered files
+## Initial delivered files (policy v1)
 
 | File | SHA-256 |
 |---|---|
@@ -55,3 +55,13 @@ The installed custom OpenBot build remains custom/main 64170898, with channel li
 | PM persistent Instructions | b5c9ea408f21482eafd7768e8fcb950266350133f8357c3170aa19fbca6001fb |
 
 Local bridge: `~/OpenBot/Bridge`. Evidence and rollback notes: `~/OpenBot/Bridge/PM_FLOW_ACCEPTANCE.md`. Private originals are backed up under `~/OpenBot/Bridge/.backup-T-08-auto-20261108T102445Z`. This is a reviewed local bridge/instruction deployment, not an app-code PR or a new custom/main merge. Restore saved files/instructions and use a fresh native direct turn for rollback; preserve request state and later edits.
+
+## Existing-task amendment (policy v2, 2026-11-08)
+
+The user explicitly authorized applying the faster flow to existing tasks while keeping necessary tests and review and removing unnecessary repeated QA. The installed policy and PM Instructions now contain that dated amendment. A completed native direct PM turn confirmed dispositions for four unfinished PM tasks. Their original task JSON snapshots remain unchanged: IDs, parents, owners, counts, states and original messages are preserved.
+
+Status and evidence-only coordination do not start new engineering/QA chains. Critical engineering work retains necessary independent review, QA and final acceptance. Reuse a completed check only if the relevant candidate, dependencies, configuration and execution environment match and it covers the current requirement. Recheck changed behavior, affected callers and unresolved failures; run broad checks for justified integration impact or required final acceptance. Consolidate findings into one handoff rather than repeated full reviews for each subtask.
+
+The amendment applies at next continuation. It does not resume, cancel, reset or complete existing tasks, and does not waive stopped-task recovery conditions. No wall-time benchmark is claimed. Installed bridge52 checks and skill validation still pass. Private task identities and replies stay local.
+
+Current policy SHA256: `c9277da23e1c08c18ecbfd2c6fcbd723fc328b9a18931ca0a031c57751a869ae`. Current PM Instructions SHA256: `ad32e6febe38bfac24396f0e70252a3c83262f2889fe91ec2fa039eb4ba161c1`. Python code remains unchanged from the initial delivery. Backup: `~/OpenBot/Bridge/.backup-existing-flow-20261108T110623Z`. Local activation/rollback record is appended to `~/OpenBot/Bridge/PM_FLOW_ACCEPTANCE.md`.

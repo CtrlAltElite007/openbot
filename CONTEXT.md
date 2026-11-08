@@ -25,7 +25,8 @@ the place where much of this work runs. Two problems stopped it:
    T-08 now requires automatic flow selection for bridge requests and direct PM chats: docs get
    one owner plus quick independent review; ordinary code gets developer checks plus independent
    review; critical changes keep separate QA. Explicit user/repository gates remain. Automatic selection is
-   now active for new tasks; ten direct PM scenarios passed on 2026-11-08. See `designs/T-08-automatic-pm-flow.md`.
+   active for new tasks. The user-authorized existing-task amendment also removes redundant
+   checking from ongoing work while preserving necessary acceptance gates; PM confirmed it. See `designs/T-08-automatic-pm-flow.md`.
 
 So we keep a fork of OpenBot, change it, and install our own build.
 

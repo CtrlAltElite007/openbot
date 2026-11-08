@@ -10,3 +10,5 @@
 - 2026-11-08 [biswanath] Team coordination lives on the `team/coordination` branch (PROTOCOL.md, STATUS.md, LOG.md, memory/).
 
 - 2026-11-08 [biswanath] Finish automatic PM workflow selection for bridge requests and direct PM chats, test it and make it ready to use; update the docs. Existing task requirements remain; docs/code use lighter flows and critical work keeps full review/QA.
+
+- 2026-11-08 [biswanath] Apply faster PM flow to existing tasks too: keep necessary tests and review, remove unnecessary repeated QA. Reuse valid unchanged evidence and preserve critical gates, task identities and stopped-task recovery conditions. This supersedes the earlier blanket keep-original-flow rule, not necessary project acceptance requirements.
